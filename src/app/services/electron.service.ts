@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { IpcRendererEvent, ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
+import { IPCChannels } from '../shared/electron-com';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,12 @@ export class ElectronService {
       // If you want to use a NodeJS 3rd party deps in Renderer process,
       // ipcRenderer.invoke can serve many common use cases.
       // https://www.electronjs.org/docs/latest/api/ipc-renderer#ipcrendererinvokechannel-args
+    }
+  }
+
+  destroy() {
+    for(let channel of Object.keys(IPCChannels)) {
+      this.ipcRenderer.removeAllListeners(channel);
     }
   }
 

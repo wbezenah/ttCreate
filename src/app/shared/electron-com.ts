@@ -5,7 +5,8 @@ export enum WindowFunc {
     min = 'minimize'
 }
 
-export enum Channels {
+export enum IPCChannels {
     windowFunc = 'window-func',
     windowRes = 'window-result',
+    windowMax = 'check-window-max'
 }

@@ -1,7 +1,7 @@
 import { app, BrowserWindow, screen, ipcMain, IpcMainEvent } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Channels, WindowFunc } from '../src/app/shared/electron-com';
+import { IPCChannels, WindowFunc } from '../src/app/shared/electron-com';
 
 let win: BrowserWindow | null = null;
 const args = process.argv.slice(1),
@@ -55,17 +55,22 @@ function createWindow(): BrowserWindow {
   });
 
   win.on('maximize', () => {
-    win.webContents.send(Channels.windowRes, [{max: true}]);
+    win.webContents.send(IPCChannels.windowRes, [{max: true}]);
   });
 
   win.on('unmaximize', () => {
-    win.webContents.send(Channels.windowRes, [{max: false}]);
+    win.webContents.send(IPCChannels.windowRes, [{max: false}]);
   });
 
-  ipcMain.on(Channels.windowFunc, (event: IpcMainEvent, winFunc: WindowFunc) => {
+  ipcMain.on(IPCChannels.windowFunc, (event: IpcMainEvent, winFunc: WindowFunc) => {
     if(win[winFunc] && typeof win[winFunc] == 'function') {
       win[winFunc]();
     }
+  });
+
+  ipcMain.on(IPCChannels.windowMax, () => {
+    let winMax = win.isMaximized();
+    win.webContents.send(IPCChannels.windowRes, [{max: winMax}]);
   });
 
   return win;
@@ -84,6 +89,13 @@ try {
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
       app.quit();
+    }
+  });
+
+  app.on('before-quit', () => {
+    // Clean up all ipcMain listeners
+    for(let channel of Object.keys(IPCChannels)) {
+      ipcMain.removeAllListeners(channel);
     }
   });
 

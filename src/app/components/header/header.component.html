@@ -1,25 +1,14 @@
-<!-- <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand"><img class="logo" src="../../../assets/logo.png"></a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item" routerLinkActive="active">
-                <a class="nav-link">File</a>
-            </li>
-            <li class="nav-item" routerLinkActive="active">
-                <a class="nav-link">Edit</a>
-            </li>
-        </ul>
-    </div>
-    </div>
-</nav> -->
-
-<header id="titlebar">
+<header class="titlebar" id="titlebar">
   <div id="drag-area">
-    <div id="window-title">
-      <span>Electron quick start</span>
+    <div class="application-bar">
+      <div class="logo-area" id="logo-area">
+        <img class="logo" src="../../../assets/logo.png" alt="">
+      </div>
+      <div class="button" id="file-button">
+        <p>File</p>
+      </div>
     </div>
-    <div id="window-controls">
+    <div class="window-controls">
       <div class="button" id="min-button">
         <img class="icon" srcset="assets/titlebar/min-w-10.png 1x, assets/titlebar/min-w-12.png 1.25x, assets/titlebar/min-w-15.png 1.5x, assets/titlebar/min-w-15.png 1.75x, assets/titlebar/min-w-20.png 2x, assets/titlebar/min-w-20.png 2.25x, assets/titlebar/min-w-24.png 2.5x, assets/titlebar/min-w-30.png 3x, assets/titlebar/min-w-30.png 3.5x" draggable="false" />
       </div>
