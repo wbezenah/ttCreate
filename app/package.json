@@ -1,0 +1,13 @@
+{
+  "name": "ttcreate",
+  "description": "Tabletop Create",
+  "author": {
+    "name": "William Bezenah",
+    "email": "wbezenah29@gmail.com"
+  },
+  "version": "13.0.0",
+  "main": "main.js",
+  "private": true,
+  "dependencies": {
+  }
+}

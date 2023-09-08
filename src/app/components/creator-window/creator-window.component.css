@@ -1,0 +1,21 @@
+.flex-container {
+    display: flex;
+}
+
+.flex-child {
+    flex: 1;
+}
+
+.button-area {
+    width: 200px;
+    height: 100%;
+    margin: 0;
+    outline: 1px solid black;
+}
+
+.box-container {
+    margin: 0;
+    width: 600px;
+    height: 100%;
+    outline: 1px solid black;
+}

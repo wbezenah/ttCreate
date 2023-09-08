@@ -1,0 +1,20 @@
+<div class="flex-container">
+    <div class="flex-child button-area">
+        <button class="btn btn-primary" (click)="onNewCard()">
+            New Card
+        </button>
+    </div>
+    
+    
+    <div 
+        class="flex-child box-container"
+    
+        appDragResize
+        [resizable]="true"
+        [draggable]="false"
+        [resizableSides]="{top: false, left: true, right: false, bottom: false}"
+    >
+        <h3>CARDS:</h3>
+        <ng-template cardHost></ng-template>
+    </div>
+</div>

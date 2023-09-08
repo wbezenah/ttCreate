@@ -1,0 +1,13 @@
+<div #box class="card" 
+    [style.width.px]="width"
+    [style.height.px]="height"
+    [style.top]="0"
+    [style.left]="0"
+
+    appDragResize
+    [resizable]="true"
+    [draggable]="true"
+    [resizableSides]="{top: true, left: true, right: true, bottom: true}"
+    [boundary]="boundary"
+>
+</div>
