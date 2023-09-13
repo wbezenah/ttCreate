@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ElectronService } from '../../services/electron.service';
 import { IPCChannels, WindowFunc } from '../../shared/electron-com';
 
@@ -7,7 +7,20 @@ import { IPCChannels, WindowFunc } from '../../shared/electron-com';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, AfterViewInit {
+  fileMenuOpen: boolean = false;
+  editMenuOpen: boolean = false;
+  windowMenuOpen: boolean = false;
+  helpMenuOpen: boolean = false;
+
+  menus: {label: string, open: boolean, submenu: any[]}[] = [
+    { label: 'File', open: false, submenu: [{label: 'Save File'}, {label: 'Open File'}, {label: 'Settings'}, {label: 'Exit'}] },
+    { label: 'Edit', open: false, submenu: [{label: 'Undo'}, {label: 'Redo'}, {label: 'Cut'}, {label: 'Copy'}, {label: 'Paste'}] },
+    { label: 'Help', open: false, submenu: [{label: 'About'}, {label: 'Discord!'}] }
+  ];
+
+  menuButtons: HTMLCollectionOf<Element>;
+
   constructor(
     private electronService: ElectronService
   ) { }
@@ -47,5 +60,24 @@ export class HeaderComponent implements OnInit {
 
     // Check if window is initially maximized
     this.electronService.send(IPCChannels.windowMax);
+  }
+
+  ngAfterViewInit(): void {
+    this.menuButtons = document.getElementsByClassName('menu-button');
+    let menuDropdowns = document.getElementsByClassName('dropdown-content');
+    for(let i = 0; i < this.menuButtons.length; i++) {
+      let currElement = this.menuButtons.item(i) as HTMLElement;
+      currElement.addEventListener('click', (event) => {
+        this.menus[i].open = !this.menus[i].open;
+      });
+      currElement.style.gridColumn = (i + 2) + '';
+
+      if(i < menuDropdowns.length) {
+        let menuElement = menuDropdowns.item(i) as HTMLElement;
+        console.log(menuElement);
+        menuElement.style.left = currElement.getBoundingClientRect().left.toString() + 'px';
+        menuElement.style.top = (currElement.getBoundingClientRect().top + currElement.getBoundingClientRect().height).toString() + 'px';
+      }
+    }
   }
 }
