@@ -6,7 +6,7 @@
         <img class="logo" src="../../../assets/logo.png" alt="">
       </div>
 
-      <div class="button menu-button" *ngFor="let item of menus">
+      <div class="button menu-button" *ngFor="let item of menus; let i = index">
         <p class="button-label">{{ item.label }}</p>
         <div class="dropdown-content">
           <p class="menu-label" *ngFor="let subitem of item.submenu" style="color: white;">{{ subitem.label }}</p>

@@ -1,6 +1,7 @@
 .titlebar {
   display: block;
   position: fixed;
+  z-index: 2;
   top: 0;
   height: 32px;
   width: 100%;
@@ -149,6 +150,10 @@
   padding-bottom: 6px;
 }
 
+.dropdown-open {
+  display: block;
+}
+
 .dropdown-content p {
   float: none;
   color: black;
@@ -159,10 +164,6 @@
 
 .menu-button:hover {
   background: rgba(255,255,255,0.2);
-}
-
-.menu-button:hover .dropdown-content {
-  display: block;
 }
 
 .menu-label {

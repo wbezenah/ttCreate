@@ -19,6 +19,8 @@ function createWindow(): BrowserWindow {
     y: Math.trunc((size.height - height) / 2),
     width: width,
     height: height,
+    minWidth: 500,
+    minHeight: 350,
     frame: false,
     webPreferences: {
       nodeIntegration: true,

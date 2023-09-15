@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { ElectronService } from '../../services/electron.service';
 import { IPCChannels, WindowFunc } from '../../shared/electron-com';
 
@@ -8,10 +8,6 @@ import { IPCChannels, WindowFunc } from '../../shared/electron-com';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
-  fileMenuOpen: boolean = false;
-  editMenuOpen: boolean = false;
-  windowMenuOpen: boolean = false;
-  helpMenuOpen: boolean = false;
 
   menus: {label: string, open: boolean, submenu: any[]}[] = [
     { label: 'File', open: false, submenu: [{label: 'Save File'}, {label: 'Open File'}, {label: 'Settings'}, {label: 'Exit'}] },
@@ -20,13 +16,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   ];
 
   menuButtons: HTMLCollectionOf<Element>;
+  menuDropdowns: HTMLCollectionOf<Element>;
 
   constructor(
-    private electronService: ElectronService
+    private electronService: ElectronService,
   ) { }
 
   ngOnInit(): void {
-
     // Add click listeners for all appropriate header elements (close, maximize, etc.)
     document.getElementById('close-button').addEventListener('click', (event: MouseEvent) => {
       this.electronService.send(IPCChannels.windowFunc, [WindowFunc.close]);
@@ -62,21 +58,47 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.electronService.send(IPCChannels.windowMax);
   }
 
+  /*
+    ngAfterViewInit()
+    - Angular lifecycle hook that sets computed styles for menu elements added via ngFor
+  */
   ngAfterViewInit(): void {
     this.menuButtons = document.getElementsByClassName('menu-button');
-    let menuDropdowns = document.getElementsByClassName('dropdown-content');
+    this.menuDropdowns = document.getElementsByClassName('dropdown-content');
     for(let i = 0; i < this.menuButtons.length; i++) {
       let currElement = this.menuButtons.item(i) as HTMLElement;
-      currElement.addEventListener('click', (event) => {
-        this.menus[i].open = !this.menus[i].open;
-      });
       currElement.style.gridColumn = (i + 2) + '';
 
-      if(i < menuDropdowns.length) {
-        let menuElement = menuDropdowns.item(i) as HTMLElement;
-        console.log(menuElement);
+      if(i < this.menuDropdowns.length) {
+        let menuElement = this.menuDropdowns.item(i) as HTMLElement;
         menuElement.style.left = currElement.getBoundingClientRect().left.toString() + 'px';
-        menuElement.style.top = (currElement.getBoundingClientRect().top + currElement.getBoundingClientRect().height).toString() + 'px';
+        let titlebarElement: HTMLElement = document.getElementById('titlebar');
+        menuElement.style.top = (titlebarElement.getBoundingClientRect().bottom - 4).toString() + 'px';
+      }
+    }
+  }
+
+  /*
+    onWindowClick
+    - listens for mouse clicks and shows/hides appropriate menus
+  */
+  @HostListener('window:click', ['$event']) onWindowClick(event: MouseEvent) {
+    if(!this.menuButtons) { return; }
+    for(let i = 0; i < this.menuButtons.length; i++) {
+      let currElement: HTMLElement = this.menuButtons.item(i) as HTMLElement;
+      if(currElement.contains(event.target as any)) {
+        if(this.menus[i].open) {
+          this.menus[i].open = false;
+          (this.menuDropdowns.item(i) as HTMLElement).classList.remove('dropdown-open');
+        }else {
+          this.menus[i].open = true;
+          (this.menuDropdowns.item(i) as HTMLElement).classList.add('dropdown-open');
+        }
+      }else {
+        if(this.menus[i].open) {
+          this.menus[i].open = false;
+          (this.menuDropdowns.item(i) as HTMLElement).classList.remove('dropdown-open');
+        }
       }
     }
   }

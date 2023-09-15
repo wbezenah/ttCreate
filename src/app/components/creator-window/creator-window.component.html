@@ -1,19 +1,13 @@
-<div class="container">
-        <button class="btn btn-primary" (click)="onNewCard()">
-            New Card
-        </button>
-    
-    
-    <div 
-        appDragResize
-        [resizable]="true"
-        [draggable]="false"
-        [resizableSides]="{top: false, left: true, right: false, bottom: false}"
+<div class="button-area tools-area">
+    <button (click)="onNewCard()">New Card</button>
+    <!-- Insert appropriate tools window via components -->
+</div>
 
-        [style.width]="600"
-        [style.height.px]="600"
-    >
-        <h4>CARDS:</h4>
-        <ng-template cardHost></ng-template>
-    </div>
+<div class="box-container stage-area">
+    <ng-template cardHost></ng-template>
+    <!-- Insert appropriate editor window via components -->
+</div>
+
+<div class="assets-area">
+    <!-- Insert appropriate assets window via components -->
 </div>
