@@ -19,7 +19,7 @@ function createWindow(): BrowserWindow {
     y: Math.trunc((size.height - height) / 2),
     width: width,
     height: height,
-    minWidth: 500,
+    minWidth: 900,
     minHeight: 350,
     frame: false,
     webPreferences: {
@@ -62,6 +62,11 @@ function createWindow(): BrowserWindow {
 
   win.on('unmaximize', () => {
     win.webContents.send(IPCChannels.windowRes, [{max: false}]);
+  });
+
+  win.on('resize', () => {
+    let size = win.getSize();
+    win.webContents.send(IPCChannels.windowRes, [{height: size[1], width: size[0]}]);
   });
 
   ipcMain.on(IPCChannels.windowFunc, (event: IpcMainEvent, winFunc: WindowFunc) => {

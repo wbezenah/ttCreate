@@ -2,15 +2,14 @@ import { AfterViewInit, Component, ComponentRef, HostListener, OnDestroy, OnInit
 import { CardInfo } from '../../models/card-info.model';
 import { CardHostDirective } from '../../directives/card-host.directive';
 import { CardComponent } from '../card/card.component';
-import { WindowSizeService } from '../../services/window-size.service';
 import { ElectronService } from '../../services/electron.service';
+import { IPCChannels } from '../../shared/electron-com';
 
 enum Resize {
   NONE = 0,
   LEFT = 1,
   RIGHT = 2
 }
-
 
 @Component({
   selector: 'app-creator-window',
@@ -23,21 +22,28 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
   componentRefs: ComponentRef<CardComponent>[] = [];
   cards: CardInfo[] = [];
 
-  private boxContainerElement: HTMLElement;
-  private buttonAreaElement: HTMLElement;
-  private assetsAreaElement: HTMLElement;
+  private editorWindowElement: HTMLElement;
+  private toolsWindowElement: HTMLElement;
+  private assetsWindowElement: HTMLElement;
 
   private readonly RESIZE_MARGIN_PX: number = 4;
-  private readonly BA_MIN_WIDTH: number = 150;
-  private readonly BC_MIN_WIDTH: number= 400;
-  private readonly AA_MIN_WIDTH: number = 150;
+  private readonly TW_MIN_WIDTH: number = 150;
+  private readonly EW_MIN_WIDTH: number= 400;
+  private readonly AW_MIN_WIDTH: number = 150;
 
   constructor (
     private electronService: ElectronService
   ) { }
 
   ngOnInit(): void {
-
+    this.electronService.addRendererListener(IPCChannels.windowRes, (event, args: any[]) => {
+      if('max' in args[0] || ('width' in args[0] && 'height' in args[0])) {
+        // const assetsWidth = this.assetsWindowElement.getBoundingClientRect().width;
+        // const editorLeft = this.editorWindowElement.getBoundingClientRect().left;
+        // this.assetsWindowElement.style.left = `calc(100% - ${assetsWidth}px)`;
+        // this.editorWindowElement.style.width = `calc(100% - ${assetsWidth}px - ${editorLeft})`;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -49,30 +55,30 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   ngAfterViewInit(): void {
-    this.boxContainerElement = document.getElementsByClassName('box-container').item(0) as HTMLElement;
-    this.buttonAreaElement = document.getElementsByClassName('button-area').item(0) as HTMLElement;
-    this.assetsAreaElement = document.getElementsByClassName('assets-area').item(0) as HTMLElement;
+    this.editorWindowElement = document.getElementsByClassName('editor-window').item(0) as HTMLElement;
+    this.toolsWindowElement = document.getElementsByClassName('tools-window').item(0) as HTMLElement;
+    this.assetsWindowElement = document.getElementsByClassName('assets-window').item(0) as HTMLElement;
   }
 
   private resizing: Resize = Resize.NONE;
 
   @HostListener('mousedown', ['$event']) onClick(event: MouseEvent) {
-    const boxRect = this.boxContainerElement.getBoundingClientRect();
-    if(event.clientX <= boxRect.left + this.RESIZE_MARGIN_PX) {
+    const editorRect = this.editorWindowElement.getBoundingClientRect();
+    if(event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX) {
       this.resizing = Resize.LEFT;
-    }else if(event.clientX >= boxRect.right - this.RESIZE_MARGIN_PX) {
+    }else if(event.clientX >= editorRect.right - this.RESIZE_MARGIN_PX) {
       this.resizing = Resize.RIGHT;
     }
   }
 
   @HostListener('window:mousemove', ['$event']) onDrag(event: MouseEvent) {
-    const boxRect = this.boxContainerElement.getBoundingClientRect();
-    const assetsRect = this.assetsAreaElement.getBoundingClientRect();
-    const buttonRect = this.buttonAreaElement.getBoundingClientRect();
+    const editorRect = this.editorWindowElement.getBoundingClientRect();
+    const assetsRect = this.assetsWindowElement.getBoundingClientRect();
+    const buttonRect = this.toolsWindowElement.getBoundingClientRect();
     if(
       this.resizing === Resize.NONE &&
-      ((event.clientX <= boxRect.left + this.RESIZE_MARGIN_PX && event.clientX >= boxRect.left) ||
-      (event.clientX <= boxRect.right && event.clientX >= boxRect.right - this.RESIZE_MARGIN_PX))
+      ((event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX && event.clientX >= editorRect.left) ||
+      (event.clientX <= editorRect.right && event.clientX >= editorRect.right - this.RESIZE_MARGIN_PX))
     ){
       document.body.style.cursor = 'ew-resize';
     }else {
@@ -83,39 +89,40 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
       case Resize.NONE:
         break;
       case Resize.LEFT:
-        if(event.clientX >= this.BA_MIN_WIDTH) {
-          if(assetsRect.left - event.clientX <= this.BC_MIN_WIDTH) {
-            //min width reached, maintain width while updating assetsArea
-            // const newAssetsLeft = Math.max(this.AA_MIN_WIDTH, (assetsRect.left + (event.clientX - boxRect.left)));
-            const newAssetsLeft = Math.min((assetsRect.right - this.AA_MIN_WIDTH), (assetsRect.left + (event.clientX - boxRect.left)));
-            this.assetsAreaElement.style.left = newAssetsLeft + 'px';
-            this.assetsAreaElement.style.width = (assetsRect.right - newAssetsLeft) + 'px';
-            const newBoxLeft = boxRect.left + (newAssetsLeft - assetsRect.left);
-            this.boxContainerElement.style.left = newBoxLeft + 'px';
-            this.buttonAreaElement.style.width = newBoxLeft + 'px';
+        //check that left resize is valid for left editor
+        if(event.clientX >= this.TW_MIN_WIDTH) {
+          //check that left resize is valid for center editor
+          if(assetsRect.left - event.clientX <= this.EW_MIN_WIDTH) {
+            //min width reached, maintain width while updating assetsWindow
+            const assetsWindowLeft = Math.min((assetsRect.right - this.AW_MIN_WIDTH), (assetsRect.left + (event.clientX - editorRect.left)));
+            this.assetsWindowElement.style.left = assetsWindowLeft + 'px';
+            this.assetsWindowElement.style.width = `calc(100% - ${assetsWindowLeft}px)`;
+            const editorWindowLeft = editorRect.left + (assetsWindowLeft - assetsRect.left);
+            this.editorWindowElement.style.left = editorWindowLeft + 'px';
+            this.toolsWindowElement.style.width = editorWindowLeft + 'px';
           }else {
-            this.boxContainerElement.style.left = event.clientX + 'px';
-            this.buttonAreaElement.style.width = event.clientX + 'px';
-            this.boxContainerElement.style.width = (assetsRect.left - event.clientX) + 'px';
+            this.editorWindowElement.style.left = event.clientX + 'px';
+            this.toolsWindowElement.style.width = event.clientX + 'px';
+            this.editorWindowElement.style.width = (assetsRect.left - event.clientX) + 'px';
           }
         }
         break;
 
       case Resize.RIGHT:
-        if(event.clientX <= assetsRect.right - this.AA_MIN_WIDTH) {
-          if(event.clientX - boxRect.left <= this.BC_MIN_WIDTH) {
-            //min width reached, maintain width while updating buttonArea
-            const newBoxLeft = Math.max(this.BA_MIN_WIDTH, (buttonRect.width - (assetsRect.left - event.clientX)));
-            this.buttonAreaElement.style.width = newBoxLeft + 'px';
-            this.boxContainerElement.style.left = newBoxLeft + 'px';
-            const newAssetsLeft = newBoxLeft + this.BC_MIN_WIDTH
-            this.assetsAreaElement.style.left = newAssetsLeft + 'px';
-            this.assetsAreaElement.style.width = (assetsRect.right - newAssetsLeft) + 'px';
+        if(event.clientX <= assetsRect.right - this.AW_MIN_WIDTH) {
+          if(event.clientX - editorRect.left <= this.EW_MIN_WIDTH) {
+            //min width reached, maintain width while updating toolsWindow
+            const editorWindowLeft = Math.max(this.TW_MIN_WIDTH, (buttonRect.width - (assetsRect.left - event.clientX)));
+            this.toolsWindowElement.style.width = editorWindowLeft + 'px';
+            this.editorWindowElement.style.left = editorWindowLeft + 'px';
+            const assetsWindowLeft = editorWindowLeft + this.EW_MIN_WIDTH
+            this.assetsWindowElement.style.left = assetsWindowLeft + 'px';
+            this.assetsWindowElement.style.width = `calc(100% - ${assetsWindowLeft}px)`;
 
           }else {
-            this.assetsAreaElement.style.left = event.clientX + 'px';
-            this.assetsAreaElement.style.width = (assetsRect.right - event.clientX) + 'px';
-            this.boxContainerElement.style.width = (event.clientX - boxRect.left) + 'px';
+            this.assetsWindowElement.style.left = event.clientX + 'px';
+            this.assetsWindowElement.style.width = `calc(100% - ${event.clientX}px)`;
+            this.editorWindowElement.style.width = (event.clientX - editorRect.left) + 'px';
           }
         }
         break;

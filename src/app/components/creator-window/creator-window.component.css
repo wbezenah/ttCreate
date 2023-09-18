@@ -1,4 +1,4 @@
-.button-area {
+.tools-window {
     position: fixed;
     z-index: 1;
     top: 32px;
@@ -9,7 +9,7 @@
     background-color: rgb(174, 109, 235);
 }
 
-.box-container {
+.editor-window {
     position: fixed;
     z-index: 1;
     top: 32px;
@@ -20,7 +20,7 @@
     background-color: #ecff59;
 }
 
-.assets-area {
+.assets-window {
     position: fixed;
     z-index: 1;
     top: 32px;
