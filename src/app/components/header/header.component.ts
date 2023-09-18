@@ -18,6 +18,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   menuButtons: HTMLCollectionOf<Element>;
   menuDropdowns: HTMLCollectionOf<Element>;
 
+  private titlebarOpen: boolean = false;
+
   constructor(
     private electronService: ElectronService,
   ) { }
@@ -84,21 +86,46 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   */
   @HostListener('window:click', ['$event']) onWindowClick(event: MouseEvent) {
     if(!this.menuButtons) { return; }
+    if(this.titlebarOpen) {
+      this.closeMenus();
+      this.titlebarOpen = false;
+      return;
+    }
+
     for(let i = 0; i < this.menuButtons.length; i++) {
       let currElement: HTMLElement = this.menuButtons.item(i) as HTMLElement;
       if(currElement.contains(event.target as any)) {
-        if(this.menus[i].open) {
-          this.menus[i].open = false;
-          (this.menuDropdowns.item(i) as HTMLElement).classList.remove('dropdown-open');
-        }else {
-          this.menus[i].open = true;
-          (this.menuDropdowns.item(i) as HTMLElement).classList.add('dropdown-open');
-        }
-      }else {
-        if(this.menus[i].open) {
-          this.menus[i].open = false;
-          (this.menuDropdowns.item(i) as HTMLElement).classList.remove('dropdown-open');
-        }
+        this.titlebarOpen = true;
+        currElement.classList.add('dropdown-open');
+        return;
+      }
+    }
+  }
+
+  /*
+    onMouseMove
+    - listens for mousemove events and updates menu dropdowns if the titlebar is open
+  */
+  @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent): void {
+    if(!this.titlebarOpen) { return; }
+    for(let i = 0; i< this.menuButtons.length; i++) {
+      let currElement: HTMLElement = this.menuButtons.item(i) as HTMLElement;
+      if(currElement.contains(event.target as any)) {
+        this.closeMenus([i]);
+        currElement.classList.add('dropdown-open');
+      }
+    }
+  }
+
+  /*
+    closeMenus(excludeIndices?: number[])
+    - closes all titlebar menus except for the ones at this.menuButtons indices specified by excludeIndices
+  */
+  private closeMenus(excludeIndices?: number[]): void {
+    for(let i = 0; i < this.menuButtons.length; i++) {
+      let currElement: HTMLElement = this.menuButtons.item(i) as HTMLElement;
+      if((!excludeIndices || !excludeIndices.includes(i)) && currElement.classList.contains('dropdown-open')) {
+        currElement.classList.remove('dropdown-open');
       }
     }
   }
