@@ -65,8 +65,9 @@ function createWindow(): BrowserWindow {
   });
 
   win.on('resize', () => {
+    let winMax = win.isMaximized()
     let size = win.getSize();
-    win.webContents.send(IPCChannels.windowRes, [{height: size[1], width: size[0]}]);
+    win.webContents.send(IPCChannels.windowRes, [{max: winMax}, {width: size[0], height: size[1]}]);
   });
 
   ipcMain.on(IPCChannels.windowFunc, (event: IpcMainEvent, winFunc: WindowFunc) => {
@@ -77,7 +78,8 @@ function createWindow(): BrowserWindow {
 
   ipcMain.on(IPCChannels.windowMax, () => {
     let winMax = win.isMaximized();
-    win.webContents.send(IPCChannels.windowRes, [{max: winMax}]);
+    let size = win.getSize();
+    win.webContents.send(IPCChannels.windowRes, [{max: winMax}, {width: size[0], height: size[1]}]);
   });
 
   return win;

@@ -6,7 +6,8 @@
     width: 150px;
     height: 100%;
     margin: 0;
-    background-color: rgb(174, 109, 235);
+    /* background-color: rgb(174, 109, 235); */
+    background-color: rgb(255, 63, 153);
 }
 
 .editor-window {
@@ -16,7 +17,6 @@
     left: 150px;
     height: 100%;
     width: calc(100% - 300px);
-    /* background: #254053; */
     background-color: #ecff59;
 }
 
@@ -27,5 +27,6 @@
     left: calc(100% - 150px);
     height: 100%;
     width: 150px;
-    background-color: rgb(174, 109, 235);
+    /* background-color: rgb(174, 109, 235); */
+    background-color: rgb(255, 63, 153);
 }
