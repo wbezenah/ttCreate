@@ -44,14 +44,16 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
     // Listen for window maximize updates
     this.electronService.addRendererListener(IPCChannels.windowRes, (event, args: any[]) => {
-      if(args.length == 1 && 'max' in args[0]) {
-        let titlebarElement: HTMLElement = document.getElementById('titlebar');
-
-        if(args[0].max) {
-          titlebarElement.classList.add('maximized');
-
-        }else {
-          titlebarElement.classList.remove('maximized');
+      for(let i = 0; i < args.length; i++) {
+        if('max' in args[i]) {
+          let titlebarElement: HTMLElement = document.getElementById('titlebar');
+  
+          if(args[i].max) {
+            titlebarElement.classList.add('maximized');
+  
+          }else {
+            titlebarElement.classList.remove('maximized');
+          }
         }
       }
     });

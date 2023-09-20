@@ -16,6 +16,8 @@ export class ElectronService {
   childProcess!: typeof childProcess;
   fs!: typeof fs;
 
+  private winSize: {width: number, height: number};
+
   constructor() {
     // Conditional imports
     if (this.isElectron) {
@@ -35,6 +37,16 @@ export class ElectronService {
         }
         console.log(`stdout:\n${stdout}`);
       });
+
+      this.ipcRenderer.on(IPCChannels.windowRes, (event: IpcRendererEvent, args: any[]) => {
+        for(let i = 0; i < args.length; i++) {
+          if('width' in args[i] && 'height' in args[i]) {
+            this.winSize = args[i];
+          }
+        }
+      });
+
+      this.ipcRenderer.send(IPCChannels.windowMax);
 
       // Notes :
       // * A NodeJS's dependency imported with 'window.require' MUST BE present in `dependencies` of both `app/package.json`
@@ -58,6 +70,10 @@ export class ElectronService {
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
+  }
+  
+  get windowSize() {
+    return this.winSize;
   }
 
   send(channel: string, args?: any[]) {
