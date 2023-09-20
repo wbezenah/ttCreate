@@ -27,6 +27,7 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: (serve),
       contextIsolation: false,
     },
+    icon: path.join(__dirname, '../src/assets/logo.png')
   });
 
   if (serve) {
