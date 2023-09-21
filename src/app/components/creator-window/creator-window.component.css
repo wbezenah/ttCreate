@@ -1,6 +1,6 @@
 .tools-window {
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     top: 32px;
     left: 0;
     width: 150px;
@@ -21,7 +21,7 @@
 
 .assets-window {
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     top: 32px;
     left: calc(100% - 150px);
     height: 100%;

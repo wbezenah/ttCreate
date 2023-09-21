@@ -28,13 +28,13 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private readonly RESIZE_MARGIN_PX: number = 4;
 
-  private readonly TW_MIN_WIDTH: number = 150;
-  private readonly TW_MAX_WIDTH: number = 350;
+  private readonly TW_MIN_WIDTH: number = 200;
+  private readonly TW_MAX_WIDTH: number = 400;
 
-  private readonly EW_MIN_WIDTH: number= 600;
+  private readonly EW_MIN_WIDTH: number= 500;
 
-  private readonly AW_MIN_WIDTH: number = 150;
-  private readonly AW_MAX_WIDTH: number = 350;
+  private readonly AW_MIN_WIDTH: number = 200;
+  private readonly AW_MAX_WIDTH: number = 400;
 
   private prevWinSize: {width: number, height: number} = {width: 1024, height: 554};
   private prevToolsW = 150;
