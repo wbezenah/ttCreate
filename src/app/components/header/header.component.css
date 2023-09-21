@@ -3,6 +3,7 @@
   position: fixed;
   z-index: 2;
   top: 0;
+  left: 0;
   height: 32px;
   width: 100%;
   /* background: #254053; */
