@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ElectronService } from './services/electron.service';
 import { TranslateService } from '@ngx-translate/core';
 import { APP_CONFIG } from '../environments/environment';
@@ -8,7 +8,7 @@ import { APP_CONFIG } from '../environments/environment';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private electronService: ElectronService,
     private translate: TranslateService,
@@ -31,5 +31,9 @@ export class AppComponent implements OnInit {
     if(this.electronService.isElectron) {
       
     }
+  }
+
+  ngOnDestroy(): void {
+    this.electronService.destroy();
   }
 }
