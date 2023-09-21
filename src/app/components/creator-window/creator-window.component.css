@@ -6,8 +6,7 @@
     width: 150px;
     height: 100%;
     margin: 0;
-    /* background-color: rgb(174, 109, 235); */
-    background-color: rgb(255, 63, 153);
+    /* background-color: rgb(255, 63, 153); */
 }
 
 .editor-window {
@@ -17,7 +16,7 @@
     left: 150px;
     height: 100%;
     width: calc(100% - 300px);
-    background-color: #ecff59;
+    /* background-color: #ecff59; */
 }
 
 .assets-window {
@@ -27,6 +26,42 @@
     left: calc(100% - 150px);
     height: 100%;
     width: 150px;
-    /* background-color: rgb(174, 109, 235); */
-    background-color: rgb(255, 63, 153);
+    /* background-color: rgb(255, 63, 153); */
+}
+
+.tools-window.resize {
+    animation: fadeInAnimationTools ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.assets-window.resize {
+    animation: fadeInAnimationAssets ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeInAnimationTools {
+    0% {
+        border-right: 2px solid rgb(255,255,0, 0.0);
+    }
+    100% {
+        border-right: 2px solid rgb(255,255,0, 1.0);
+     }
+}
+@keyframes fadeInAnimationAssets {
+    0% {
+        border-left: 2px solid rgb(255,255,0, 0.0);
+    }
+    100% {
+        border-left: 2px solid rgb(255,255,0, 1.0);
+     }
+}
+
+.center-window {
+    background-color: rgb(64, 64, 64);
+}
+
+.side-window {
+    background-color: #2d3a44;;
 }

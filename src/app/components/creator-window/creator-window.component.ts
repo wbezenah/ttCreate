@@ -27,9 +27,14 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
   private assetsWindowElement: HTMLElement;
 
   private readonly RESIZE_MARGIN_PX: number = 4;
+
   private readonly TW_MIN_WIDTH: number = 150;
+  private readonly TW_MAX_WIDTH: number = 350;
+
   private readonly EW_MIN_WIDTH: number= 600;
+
   private readonly AW_MIN_WIDTH: number = 150;
+  private readonly AW_MAX_WIDTH: number = 350;
 
   private prevWinSize: {width: number, height: number} = {width: 1024, height: 554};
   private prevToolsW = 150;
@@ -40,6 +45,11 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
   ) { }
 
   ngOnInit(): void {
+    //unnecessary for application build but necessary for browser instance
+    if(!this.electronService.isElectron) {
+      const docBox = document.body.getBoundingClientRect();
+      this.prevWinSize = {width: docBox.width, height: docBox.width};
+    }
     this.electronService.addRendererListener(IPCChannels.windowRes, (event, args: any[]) => {
       for(let i = 0; i < args.length; i++) {
         if('width' in args[i] && 'height' in args[i] && this.prevWinSize) {
@@ -71,13 +81,17 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
     const pAssets = this.prevAssetsW / this.prevWinSize.width;
 
     let toolsWidth = Math.max(Math.trunc(pTools * windowSize.width), this.TW_MIN_WIDTH);
+    toolsWidth = Math.min(toolsWidth, this.TW_MAX_WIDTH);
     let assetsWidth = Math.max(Math.trunc(pAssets * windowSize.width), this.AW_MIN_WIDTH);
+    assetsWidth = Math.min(assetsWidth, this.AW_MAX_WIDTH);
     let editorWidth = windowSize.width - toolsWidth - assetsWidth;
 
     if(editorWidth < this.EW_MIN_WIDTH) {
       if(this.resizing === Resize.NONE) {
-        console.error('Invalid Window Size on Resize.NONE');
-        return;
+        // console.error('Invalid Window Size on Resize.NONE... Attempting to reset window');
+        toolsWidth = this.TW_MIN_WIDTH;
+        assetsWidth = this.AW_MIN_WIDTH;
+        editorWidth = windowSize.width - toolsWidth - assetsWidth;
       }
       
       const diff = this.EW_MIN_WIDTH - editorWidth;
@@ -117,9 +131,9 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
 
   @HostListener('mousedown', ['$event']) onClick(event: MouseEvent) {
     const editorRect = this.editorWindowElement.getBoundingClientRect();
-    if(event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX) {
+    if(event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX && event.clientX >= editorRect.left) {
       this.resizing = Resize.LEFT;
-    }else if(event.clientX >= editorRect.right - this.RESIZE_MARGIN_PX) {
+    }else if(event.clientX >= editorRect.right - this.RESIZE_MARGIN_PX && event.clientX <= editorRect.right) {
       this.resizing = Resize.RIGHT;
     }
   }
@@ -128,14 +142,26 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
     let editorRect = this.editorWindowElement.getBoundingClientRect();
     let assetsRect = this.assetsWindowElement.getBoundingClientRect();
     let toolsRect = this.toolsWindowElement.getBoundingClientRect();
-    if(
-      this.resizing === Resize.NONE &&
-      ((event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX && event.clientX >= editorRect.left) ||
-      (event.clientX <= editorRect.right && event.clientX >= editorRect.right - this.RESIZE_MARGIN_PX))
-    ){
+
+    if(this.resizing === Resize.NONE && event.clientX >= editorRect.left && event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX) {
       document.body.style.cursor = 'ew-resize';
-    }else {
-      document.body.style.cursor = 'auto'
+      //case left
+      this.toolsWindowElement.classList.add('resize');
+    }
+    else if(this.resizing === Resize.NONE && event.clientX <= editorRect.right && event.clientX >= editorRect.right - this.RESIZE_MARGIN_PX) {
+      document.body.style.cursor = 'ew-resize';
+      //case right
+      this.assetsWindowElement.classList.add('resize');
+    }
+    else if(this.resizing !== Resize.NONE) {
+      document.body.style.cursor = 'ew-resize';
+      // this.toolsWindowElement.classList.remove('resize');
+      // this.assetsWindowElement.classList.remove('resize');
+    }
+    else {
+      document.body.style.cursor = 'auto';
+      this.toolsWindowElement.classList.remove('resize');
+      this.assetsWindowElement.classList.remove('resize');
     }
 
     switch(this.resizing) {
@@ -143,7 +169,7 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
         break;
       
       case Resize.LEFT:
-        if(event.clientX >= this.TW_MIN_WIDTH) {
+        if(event.clientX >= this.TW_MIN_WIDTH && event.clientX <= this.TW_MAX_WIDTH) {
           this.toolsWindowElement.style.width = event.clientX + 'px';
           this.prevToolsW = event.clientX;
           this.setWindowSizes();
@@ -151,7 +177,7 @@ export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit 
         break;
       
       case Resize.RIGHT:
-        if(event.clientX <= assetsRect.right - this.AW_MIN_WIDTH) {
+        if(event.clientX <= assetsRect.right - this.AW_MIN_WIDTH && event.clientX >= assetsRect.right - this.AW_MAX_WIDTH) {
           const assetsWidth = assetsRect.width + (assetsRect.left - event.clientX);
           this.assetsWindowElement.style.widows = assetsWidth + 'px';
           this.prevAssetsW = assetsWidth;
