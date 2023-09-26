@@ -13,10 +13,10 @@ enum Resize {
 
 @Component({
   selector: 'app-creator-window',
-  templateUrl: './creator-window.component.html',
-  styleUrls: ['./creator-window.component.css']
+  templateUrl: './creator-host.component.html',
+  styleUrls: ['./creator-host.component.css']
 })
-export class CreatorWindowComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   
   @ViewChild(CardHostDirective, {static: true}) cardHost!: CardHostDirective;
   componentRefs: ComponentRef<CardComponent>[] = [];

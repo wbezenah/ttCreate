@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
 import { CardComponent } from './components/card/card.component';
-import { CreatorWindowComponent } from './components/creator-window/creator-window.component';
+import { CreatorHostComponent } from './components/creator-host/creator-host.component';
 import { CardHostDirective } from './directives/card-host.directive';
 import { DragResizeDirective } from './directives/drag-resize.directive';
 
@@ -26,7 +26,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     HeaderComponent,
     ErrorPageComponent,
     CardComponent,
-    CreatorWindowComponent,
+    CreatorHostComponent,
     CardHostDirective,
     DragResizeDirective
   ],
