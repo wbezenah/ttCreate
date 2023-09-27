@@ -1,7 +1,7 @@
 import { Directive, Input, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  selector: '[cardHost]'
+  selector: '[appCardHost]'
 })
 export class CardHostDirective {
   

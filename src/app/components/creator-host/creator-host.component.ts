@@ -4,6 +4,7 @@ import { CardHostDirective } from '../../directives/card-host.directive';
 import { CardComponent } from '../card/card.component';
 import { ElectronService } from '../../services/electron.service';
 import { IPCChannels } from '../../shared/electron-com';
+import { Editor, EditorSwitchService } from '../../services/editor-switch.service';
 
 enum Resize {
   NONE = 0,
@@ -19,6 +20,9 @@ enum Resize {
 export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   
   @ViewChild(CardHostDirective, {static: true}) cardHost!: CardHostDirective;
+
+
+  
   componentRefs: ComponentRef<CardComponent>[] = [];
   cards: CardInfo[] = [];
 
@@ -41,7 +45,8 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   private prevAssetsW = 150;
 
   constructor (
-    private electronService: ElectronService
+    private electronService: ElectronService,
+    private editorSwitchService: EditorSwitchService
   ) { }
 
   ngOnInit(): void {
@@ -59,6 +64,12 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.electronService.send(IPCChannels.windowMax);
+
+    console.log(this.editorSwitchService.getActiveComponents());
+    this.editorSwitchService.setActiveEditor(Editor.BOARD);
+    console.log(this.editorSwitchService.getActiveComponents());
+
+    
   }
 
   ngOnDestroy(): void {
@@ -192,13 +203,13 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
     document.body.style.cursor = 'auto';
   }
 
-  onNewCard() {
-    let newCardInfo: CardInfo = new CardInfo('New Card');
-    const viewContainerRef = this.cardHost.viewContainerRef;
-    const newComponentRef = viewContainerRef.createComponent(CardComponent);
-    newComponentRef.instance.cardInfo = newCardInfo;
-    newComponentRef.instance.width = 200;
-    newComponentRef.instance.height = 300;
-    this.componentRefs.push(newComponentRef);
-  }
+  // onNewCard() {
+  //   let newCardInfo: CardInfo = new CardInfo('New Card');
+  //   const viewContainerRef = this.cardHost.viewContainerRef;
+  //   const newComponentRef = viewContainerRef.createComponent(CardComponent);
+  //   newComponentRef.instance.cardInfo = newCardInfo;
+  //   newComponentRef.instance.width = 200;
+  //   newComponentRef.instance.height = 300;
+  //   this.componentRefs.push(newComponentRef);
+  // }
 }

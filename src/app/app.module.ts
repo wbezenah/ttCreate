@@ -13,9 +13,20 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
 import { CardComponent } from './components/card/card.component';
-import { CreatorHostComponent } from './components/creator-host/creator-host.component';
 import { CardHostDirective } from './directives/card-host.directive';
 import { DragResizeDirective } from './directives/drag-resize.directive';
+
+import { CreatorHostComponent } from './components/creator-host/creator-host.component';
+
+import { BoardToolsComponent } from './components/editors/board/board-tools/board-tools.component';
+import { BoardEditorComponent } from './components/editors/board/board-editor/board-editor.component';
+import { BoardAssetsComponent } from './components/editors/board/board-assets/board-assets.component';
+import { MainAssetsComponent } from './components/editors/main/main-assets/main-assets.component';
+import { MainToolsComponent } from './components/editors/main/main-tools/main-tools.component';
+import { MainEditorComponent } from './components/editors/main/main-editor/main-editor.component';
+import { ToolsHostDirective } from './directives/tools-host.directive';
+import { EditorHostDirective } from './directives/editor-host.directive';
+import { AssetsHostDirective } from './directives/assets-host.directive';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http);
@@ -28,7 +39,16 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     CardComponent,
     CreatorHostComponent,
     CardHostDirective,
-    DragResizeDirective
+    DragResizeDirective,
+    BoardToolsComponent,
+    BoardEditorComponent,
+    BoardAssetsComponent,
+    MainAssetsComponent,
+    MainToolsComponent,
+    MainEditorComponent,
+    ToolsHostDirective,
+    EditorHostDirective,
+    AssetsHostDirective
   ],
   imports: [
     BrowserModule,

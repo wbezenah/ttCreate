@@ -1,37 +1,39 @@
 import { Injectable } from '@angular/core';
 
+export enum Editor {
+  MAIN = 'Main',
+  BOARD = 'Board',
+  DECK = 'Deck',
+  TOKEN = 'Token'
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class EditorSwitchService {
 
-  private editors: Map<string, boolean> = new Map<string, boolean>([
-    ['main', true],
-    ['board', false],
-    ['deck', false],
-    ['token', false]
-  ]);
-
-  private active_editor = 'main';
+  private active_editor: Editor = Editor.MAIN;
 
   constructor() { }
 
-  get activeEditor(): string {
-    return this.activeEditor;
+  get activeEditor(): Editor {
+    return this.active_editor;
   }
 
-  isActive(editor: string): boolean {
-    return this.editors.get(editor);
+  isActive(editor: Editor): boolean {
+    return this.active_editor === editor;
   }
 
-  setActiveEditor(editor: string): boolean {
-    if(this.editors.has(editor)) {
-      this.editors.set(this.active_editor, false);
-      this.active_editor = editor;
-      this.editors.set(this.active_editor, true);
-      return true;
-    }else {
-      return false;
-    }
+  setActiveEditor(editor: Editor): Editor {
+    this.active_editor = editor;
+    return this.active_editor;
+  }
+
+  getActiveComponents(): {toolsWindow: string, editorWindow: string, assetsWindow: string} {
+    return {
+      toolsWindow: this.active_editor + 'ToolsComponent',
+      editorWindow: this.active_editor + 'EditorComponent',
+      assetsWindow: this.active_editor + 'AssetsComponent'
+    };
   }
 }

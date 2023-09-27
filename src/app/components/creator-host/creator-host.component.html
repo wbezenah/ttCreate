@@ -1,19 +1,27 @@
 <div 
  class="tools-window side-window"
 >
-    <button (click)="onNewCard()">New Card</button>
+    <!-- <button (click)="onNewCard()">New Card</button> -->
+
     <!-- Insert appropriate tools window via components -->
+    <ng-template appToolsHost></ng-template>
+
 </div>
 
 <div
  class="editor-window center-window"
 >
-    <ng-template cardHost></ng-template>
+    <!-- <ng-template appCardHost></ng-template> -->
+
     <!-- Insert appropriate editor window via components -->
+    <ng-template appEditorHost></ng-template>
+    
 </div>
 
 <div
  class="assets-window side-window"
 >
     <!-- Insert appropriate assets window via components -->
+    <ng-template appAssetsHost></ng-template>
+
 </div>
