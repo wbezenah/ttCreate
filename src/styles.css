@@ -1,1 +1,25 @@
 body { background-color: rgb(53, 53, 53); }
+
+.tooltip {
+    position: fixed;
+    z-index: 1000;
+    padding: 3px 8px;
+    background-color: #3b3b3b;
+    border-radius: 4px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    font-size: small;
+    color: white;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+    animation: fadeInAnimationTooltip ease 0.5s;
+}
+
+@keyframes fadeInAnimationTooltip {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+     }
+}

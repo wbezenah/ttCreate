@@ -1,27 +1,48 @@
 <div 
  class="tools-window side-window"
 >
-    <!-- <button (click)="onNewCard()">New Card</button> -->
-
-    <!-- Insert appropriate tools window via components -->
-    <ng-template appToolsHost></ng-template>
+    <!-- Insert appropriate tools window via dynamic components -->
+    <div class="main">
+        <app-main-tools></app-main-tools>
+    </div>
+    <div class="board">
+        <app-board-tools></app-board-tools>
+    </div>
 
 </div>
 
 <div
  class="editor-window center-window"
 >
-    <!-- <ng-template appCardHost></ng-template> -->
-
-    <!-- Insert appropriate editor window via components -->
-    <ng-template appEditorHost></ng-template>
+    <div class="container-fluid open-windows">
+        <div class="tab" *ngFor="let editor of editorList; index as i" (click)="openEditor($event, i)">
+            <div class="name">
+                <p>{{ editor.name }}</p>
+            </div>
+            <div class="close" *ngIf="editor.closeable" (click)="closeEditor($event, i)">
+                <img class="close-img" src="../../../assets/titlebar/close-w-10.png" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- Insert appropriate editor window via dynamic components -->
+    <div class="main">
+        <app-main-editor></app-main-editor>
+    </div>
+    <div class="board">
+        <app-board-editor></app-board-editor>
+    </div>
     
 </div>
 
 <div
  class="assets-window side-window"
 >
-    <!-- Insert appropriate assets window via components -->
-    <ng-template appAssetsHost></ng-template>
+    <!-- Insert appropriate assets window via dynamic components -->
+    <div class="main">
+        <app-main-assets></app-main-assets>
+    </div>
+    <div class="board">
+        <app-board-assets></app-board-assets>
+    </div>
 
 </div>

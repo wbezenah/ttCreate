@@ -1,20 +1,24 @@
 import { Injectable } from '@angular/core';
-
-export enum Editor {
-  MAIN = 'Main',
-  BOARD = 'Board',
-  DECK = 'Deck',
-  TOKEN = 'Token'
-}
+import { Subject } from 'rxjs';
+import { Editor, EditorType } from '../models/editor.model';
+import { ProjectService } from './project.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EditorSwitchService {
 
-  private active_editor: Editor = Editor.MAIN;
+  private active_editor: Editor;
+  private open_editors: Editor[] = [];
+  
+  activeEditorUpdate: Subject<EditorType> = new Subject<EditorType>();
 
-  constructor() { }
+  constructor(
+    private projectService: ProjectService
+  ) {
+    this.open_editors.push(this.projectService.getMainEditor());
+    this.active_editor = this.open_editors[0];
+  }
 
   get activeEditor(): Editor {
     return this.active_editor;
@@ -24,16 +28,22 @@ export class EditorSwitchService {
     return this.active_editor === editor;
   }
 
-  setActiveEditor(editor: Editor): Editor {
+  setActiveEditor(editor: Editor): EditorType {
     this.active_editor = editor;
-    return this.active_editor;
+    this.activeEditorUpdate.next(this.activeEditor.type);
+    return this.active_editor.type;
   }
 
-  getActiveComponents(): {toolsWindow: string, editorWindow: string, assetsWindow: string} {
-    return {
-      toolsWindow: this.active_editor + 'ToolsComponent',
-      editorWindow: this.active_editor + 'EditorComponent',
-      assetsWindow: this.active_editor + 'AssetsComponent'
-    };
+  get openEditors(): Editor[] {
+    return this.open_editors;
+  }
+
+  newEditor(type: EditorType) {
+    let nEditor: Editor = new Editor();
+    nEditor.closeable = true;
+    nEditor.name = 'new ' + type + ' editor';
+    nEditor.type = type;
+    this.openEditors.push(nEditor);
+    this.setActiveEditor(nEditor);
   }
 }

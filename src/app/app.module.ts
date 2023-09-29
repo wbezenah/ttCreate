@@ -24,9 +24,7 @@ import { BoardAssetsComponent } from './components/editors/board/board-assets/bo
 import { MainAssetsComponent } from './components/editors/main/main-assets/main-assets.component';
 import { MainToolsComponent } from './components/editors/main/main-tools/main-tools.component';
 import { MainEditorComponent } from './components/editors/main/main-editor/main-editor.component';
-import { ToolsHostDirective } from './directives/tools-host.directive';
-import { EditorHostDirective } from './directives/editor-host.directive';
-import { AssetsHostDirective } from './directives/assets-host.directive';
+import { TooltipDirective } from './directives/tooltip.directive';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http);
@@ -46,9 +44,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     MainAssetsComponent,
     MainToolsComponent,
     MainEditorComponent,
-    ToolsHostDirective,
-    EditorHostDirective,
-    AssetsHostDirective
+    TooltipDirective
   ],
   imports: [
     BrowserModule,

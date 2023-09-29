@@ -1,0 +1,15 @@
+.window-header {
+    display: grid;
+    background-color: rgb(76, 97, 112); 
+    justify-content: center;
+    padding: 4px;
+    box-shadow: 0px 5px 4px -4px rgba(40, 51, 60, 1);
+}
+
+.window-header p {
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    margin: 0;
+    font-size: 12px;
+}

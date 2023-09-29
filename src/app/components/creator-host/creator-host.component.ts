@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ComponentRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CardInfo } from '../../models/card-info.model';
 import { CardHostDirective } from '../../directives/card-host.directive';
 import { CardComponent } from '../card/card.component';
 import { ElectronService } from '../../services/electron.service';
 import { IPCChannels } from '../../shared/electron-com';
-import { Editor, EditorSwitchService } from '../../services/editor-switch.service';
+import { EditorSwitchService } from '../../services/editor-switch.service';
+import { Editor, EditorType } from '../../models/editor.model';
 
 enum Resize {
   NONE = 0,
@@ -18,11 +19,7 @@ enum Resize {
   styleUrls: ['./creator-host.component.css']
 })
 export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
-  
-  @ViewChild(CardHostDirective, {static: true}) cardHost!: CardHostDirective;
 
-
-  
   componentRefs: ComponentRef<CardComponent>[] = [];
   cards: CardInfo[] = [];
 
@@ -30,13 +27,14 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   private toolsWindowElement: HTMLElement;
   private assetsWindowElement: HTMLElement;
 
+  private activeElements: HTMLCollectionOf<Element>;
+  private open_editors: Editor[] = [];
+
   private readonly RESIZE_MARGIN_PX: number = 4;
 
   private readonly TW_MIN_WIDTH: number = 200;
   private readonly TW_MAX_WIDTH: number = 400;
-
   private readonly EW_MIN_WIDTH: number= 500;
-
   private readonly AW_MIN_WIDTH: number = 200;
   private readonly AW_MAX_WIDTH: number = 400;
 
@@ -65,11 +63,11 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.electronService.send(IPCChannels.windowMax);
 
-    console.log(this.editorSwitchService.getActiveComponents());
-    this.editorSwitchService.setActiveEditor(Editor.BOARD);
-    console.log(this.editorSwitchService.getActiveComponents());
+    this.updateActiveComponents();
 
-    
+    this.editorSwitchService.activeEditorUpdate.subscribe((value: EditorType) => {
+        this.updateActiveComponents();
+    });
   }
 
   ngOnDestroy(): void {
@@ -150,6 +148,8 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   @HostListener('window:mousemove', ['$event']) onDrag(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
     let editorRect = this.editorWindowElement.getBoundingClientRect();
     let assetsRect = this.assetsWindowElement.getBoundingClientRect();
     let toolsRect = this.toolsWindowElement.getBoundingClientRect();
@@ -166,8 +166,6 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     else if(this.resizing !== Resize.NONE) {
       document.body.style.cursor = 'ew-resize';
-      // this.toolsWindowElement.classList.remove('resize');
-      // this.assetsWindowElement.classList.remove('resize');
     }
     else {
       document.body.style.cursor = 'auto';
@@ -201,6 +199,44 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener('window:mouseup', ['$event']) onMouseUp(event: MouseEvent) {
     this.resizing = Resize.NONE;
     document.body.style.cursor = 'auto';
+  }
+
+  private updateActiveComponents() {
+    this.open_editors = this.editorSwitchService.openEditors;
+    this.activeElements = document.getElementsByClassName(this.editorSwitchService.activeEditor.type.toLowerCase());
+
+    if(!this.activeElements) {
+      console.error('ERROR. NO SUCH ELEMENTS');
+      return;
+    }
+
+    for(let eT of Object.keys(EditorType)) {
+      let inactiveElements = document.getElementsByClassName(eT.toLowerCase());
+      for(let i = 0; i < inactiveElements.length; i++) {
+        inactiveElements.item(i).classList.remove('comp-active');
+      }
+    }
+
+    for(let i = 0; i < this.activeElements.length; i++) {
+      this.activeElements.item(i).classList.add('comp-active');
+    }
+  }
+
+  
+  openEditor(event: MouseEvent, index: number) {
+    if((event.target as HTMLElement).classList.contains('close')) {
+      return;
+    }
+    console.log('opening');
+    this.editorSwitchService.setActiveEditor(this.editorSwitchService.openEditors[index]);
+  }
+
+  closeEditor(event: MouseEvent, index: number) {
+    console.log('closing');
+  }
+
+  get editorList(): Editor[] {
+    return this.open_editors;
   }
 
   // onNewCard() {

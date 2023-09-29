@@ -65,3 +65,55 @@
 .side-window {
     background-color: #2d3a44;;
 }
+
+.main {
+    display: none;
+}
+
+.board {
+    display: none;
+}
+
+.comp-active {
+    display: grid;
+}
+
+.open-windows {
+    display: flex;
+    align-items: center;
+    height: 35px;
+    background-color: rgb(64, 75, 84); 
+    box-shadow: 0px 5px 4px -4px rgba(40, 51, 60, 1);
+}
+
+.tab {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    padding-left: 6px;
+    min-width: 80px;
+    max-width: 1200px;
+    height: 100%;
+    border-right:1px solid #252525;
+    overflow: hidden;
+}
+
+.tab p {
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    margin: 0;
+    font-size: 12px;
+}
+
+.tab:hover {
+    background-color: #4d5c68;
+}
+
+.close-img {
+    color: white;
+    width: 8px;
+    padding: 0;
+    margin-left: 8px;
+    margin-right: 4px;
+}

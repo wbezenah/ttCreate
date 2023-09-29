@@ -1,0 +1,43 @@
+/* Moved to editors.css */
+/* .tools-header {
+    display: grid;
+    background-color: rgb(76, 97, 112); 
+    justify-content: center;
+    padding: 4px;
+    box-shadow: 0px 5px 4px -4px rgba(40, 51, 60, 1);
+}
+
+.tools-header p {
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    margin: 0;
+    font-size: 12px;
+} */
+
+.tools {
+    padding-top: 20px;
+    display: grid;
+    justify-items: center;
+
+    grid-template-columns: repeat( auto-fit, minmax(100px, 1fr) );
+}
+
+.button-area {
+    margin: 0 0 20px 0;
+}
+
+.btn {
+    height: 50px;
+    width: 50px;
+    border: none;
+    border-radius: 6px;
+}
+
+.btn:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.btn:active {
+    background-color: rgba(255, 255, 255, 0.6);
+}
