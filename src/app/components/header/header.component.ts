@@ -27,19 +27,19 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // Add click listeners for all appropriate header elements (close, maximize, etc.)
     document.getElementById('close-button').addEventListener('click', (event: MouseEvent) => {
-      this.electronService.send(IPCChannels.windowFunc, [WindowFunc.close]);
+      this.electronService.send(IPCChannels.windowFunc, WindowFunc.close);
     });
 
     document.getElementById('min-button').addEventListener('click', (event: MouseEvent) => {
-      this.electronService.send(IPCChannels.windowFunc, [WindowFunc.min]);
+      this.electronService.send(IPCChannels.windowFunc, WindowFunc.min);
     });
 
     document.getElementById('restore-button').addEventListener("click", event => {
-      this.electronService.send(IPCChannels.windowFunc, [WindowFunc.unmax]);
+      this.electronService.send(IPCChannels.windowFunc, WindowFunc.unmax);
     });
 
     document.getElementById('max-button').addEventListener('click', (event: MouseEvent) => {
-      this.electronService.send(IPCChannels.windowFunc, [WindowFunc.max]);
+      this.electronService.send(IPCChannels.windowFunc, WindowFunc.max);
     });
 
     // Listen for window maximize updates

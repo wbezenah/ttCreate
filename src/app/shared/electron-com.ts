@@ -8,5 +8,6 @@ export enum WindowFunc {
 export enum IPCChannels {
     windowFunc = 'window-func',
     windowRes = 'window-result',
-    windowMax = 'check-window-max'
+    windowMax = 'check-window-max',
+    createModal = 'create-modal'
 }

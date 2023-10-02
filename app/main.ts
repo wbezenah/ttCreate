@@ -1,11 +1,45 @@
-import { app, BrowserWindow, screen, ipcMain, IpcMainEvent } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, IpcMainEvent, IpcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { IPCChannels, WindowFunc } from '../src/app/shared/electron-com';
 
 let win: BrowserWindow | null = null;
+
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
+
+function createModal(parent: BrowserWindow, modalOptions: {title?: string, width?: number, height?: number}): BrowserWindow {
+  const windowSize = parent.getSize();
+  const title = modalOptions.title ? modalOptions.title : 'modal--window--no-title';
+  const width = modalOptions.width ? modalOptions.width : Math.trunc(windowSize[0] / 2);
+  const height = modalOptions.height ? modalOptions.height : Math.trunc(windowSize[1] / 2);
+
+  let modalWin = new BrowserWindow({
+    parent: parent,
+    width: width,
+    height: height,
+    title: title,
+    modal: true,
+    alwaysOnTop: true,
+    autoHideMenuBar: true,
+    webPreferences: {
+      nodeIntegration: true,
+      allowRunningInsecureContent: (serve),
+      contextIsolation: false,
+    },
+    icon: path.join(__dirname, '../src/assets/logo.png')
+  });
+
+  modalWin.on('closed', () => { 
+    modalWin = null 
+  });
+
+  // Load the HTML dialog box
+  modalWin.loadURL(path.join(__dirname, "../src/app/components/modal/modal.html"));
+  modalWin.once('ready-to-show', () => { modalWin.show() });
+
+  return modalWin;
+}
 
 function createWindow(): BrowserWindow {
 
@@ -81,6 +115,10 @@ function createWindow(): BrowserWindow {
     let winMax = win.isMaximized();
     let size = win.getSize();
     win.webContents.send(IPCChannels.windowRes, [{max: winMax}, {width: size[0], height: size[1]}]);
+  });
+
+  ipcMain.on(IPCChannels.createModal, (event: IpcMainEvent, modalOptions: {title?: string, width?: number, height?: number}) => {
+    createModal(win, modalOptions);
   });
 
   return win;

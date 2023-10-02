@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Editor, EditorType } from '../models/editor.model';
 import { ProjectService } from './project.service';
+import { ElectronService } from './electron.service';
+import { IPCChannels } from '../shared/electron-com';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +16,7 @@ export class EditorSwitchService {
   activeEditorUpdate: Subject<EditorType> = new Subject<EditorType>();
 
   constructor(
+    private electronService: ElectronService,
     private projectService: ProjectService
   ) {
     this.open_editors.push(this.projectService.getMainEditor());
@@ -39,11 +42,13 @@ export class EditorSwitchService {
   }
 
   newEditor(type: EditorType) {
-    let nEditor: Editor = new Editor();
-    nEditor.closeable = true;
-    nEditor.name = 'new ' + type + ' editor';
-    nEditor.type = type;
-    this.openEditors.push(nEditor);
-    this.setActiveEditor(nEditor);
+    // let nEditor: Editor = new Editor();
+    // nEditor.closeable = true;
+    // nEditor.name = 'new ' + type + ' editor';
+    // nEditor.type = type;
+    // this.openEditors.push(nEditor);
+    // this.setActiveEditor(nEditor);
+    const modalTitle = 'New ' + type;
+    this.electronService.send(IPCChannels.createModal, {title: modalTitle});
   }
 }

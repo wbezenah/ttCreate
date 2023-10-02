@@ -76,7 +76,7 @@ export class ElectronService {
     return this.winSize;
   }
 
-  send(channel: string, args?: any[]) {
+  send(channel: string, args?: any) {
     if(this.isElectron && this.ipcRenderer) {
       this.ipcRenderer.send(channel, args);
     }
