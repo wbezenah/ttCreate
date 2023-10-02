@@ -6,13 +6,15 @@ _Currently in development..._
 
 ## Features
 ### Complete:
+- editor views for each asset type and ability to switch between open editors
 - resizing for global editor window
 - titlebar with menus (no functionality assigned to submenus) and close/max/restore/min buttons
 
 ### In Progress:
 - bug fixes!
 - develop a JSON format for eventual saving/loading of projects
-- design a flow for view swapping between editor modes (main: creator => sub: deck, card, etc./)
+- complete editor functionality for each asset editor
+- complete modal template for opening a new editor
 
 ### TODO (unordered):
 - models: card, deck, board
