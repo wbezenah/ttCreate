@@ -27,6 +27,7 @@ function createModal(parent: BrowserWindow, modalOptions: {title?: string, type?
       nodeIntegration: true,
       allowRunningInsecureContent: (serve),
       contextIsolation: false,
+      devTools: false
     },
     icon: path.join(__dirname, '../src/assets/logo.png')
   });
