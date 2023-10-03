@@ -66,7 +66,8 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateActiveComponents();
 
     this.editorSwitchService.activeEditorUpdate.subscribe((value: EditorType) => {
-        this.updateActiveComponents();
+      console.log('Recieved new editor: ', value);
+      this.updateActiveComponents();
     });
   }
 
@@ -202,6 +203,7 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateActiveComponents() {
+    console.log('Updating Active Components');
     this.open_editors = this.editorSwitchService.openEditors;
     this.activeElements = document.getElementsByClassName(this.editorSwitchService.activeEditor.type.toLowerCase());
 

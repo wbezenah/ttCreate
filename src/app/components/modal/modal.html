@@ -1,30 +1,54 @@
 <!DOCTYPE html>
+<head>
+  <link rel="stylesheet" href="modal.css">
+</head>
 <body>
-    <p id="label"></p>
-    <p>
-      <input type = "text" id="data" value="" required>
-      <input type = "button" id="ok" value="OK" onclick="response()">
-      <input type = "button" value="Cancel" onclick="cancel()">
-    </p>
+    <div class="input">
+      <form id="f">
+        <div class="input-area">
+          <label for="name" id="asset-label"></label>
+          <input type="text" name="name" id="name">
+          <span class="empty-err" id="empty-err" style="display: none;">Please enter a name!</span>
+          <div class="button-area">
+            <button type="button" onclick="response()">Create Asset</button>
+            <button type="button" onclick="cancel()" id="cancel-btn">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
     
     <script>
     const { ipcRenderer } = require("electron")
     function cancel() {
-      ipcRenderer.send("closeDialog", "")
+      ipcRenderer.send("close-modal", "")
       this.close();
     }
     
     function response() {
-      ipcRenderer.send("closeDialog", document.getElementById("data").value)
-      this.close();
+      const res = document.getElementById('name').value;
+      if(res && res.length > 0) {
+        ipcRenderer.send("close-modal", {modalResult: res});
+        this.close();
+      }else {
+        document.getElementById('empty-err').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('empty-err').style.display = 'none';
+        }, 4000)
+      }
     }
     
     window.onload=function() {
-      // var options = ipcRenderer.sendSync("openDialog", "")
-      // var params = JSON.parse(options)
-      // document.getElementById("label").innerHTML = params.label;
-      // document.getElementById("data").value = params.value;
-      // document.getElementById("ok").value = params.ok;
+      const modalData = ipcRenderer.sendSync('modalData', '');
+      const title = modalData.title;
+      document.getElementById('asset-label').innerHTML = 'Enter ' + title + ' Name';
+    }
+
+    window.onkeydown=function(event) {
+      if(event.key === 'Enter') {
+        event.preventDefault();
+        event.stopPropagation();
+        response();
+      }
     }
     </script>
 </body>

@@ -14,6 +14,6 @@ export class MainToolsComponent {
   ) { }
 
   onNewAsset(type: EditorType) {
-    this.editorSwitchService.newEditor(type);
+    this.editorSwitchService.openPromptModal(type);
   }
 }
