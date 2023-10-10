@@ -11,10 +11,11 @@ _Currently in development..._
 - titlebar with menus (no functionality assigned to submenus) and close/max/restore/min buttons
 
 ### In Progress:
-- bug fixes!
+- bug fixes! known bugs:
+    - application flicker on exiting modal window (Electron modals are weird, maybe just implement own modal)
 - develop a JSON format for eventual saving/loading of projects
 - complete editor functionality for each asset editor
-- complete modal template for opening a new editor
+- polish modal view for opening a new editor
 
 ### TODO (unordered):
 - models: card, deck, board
