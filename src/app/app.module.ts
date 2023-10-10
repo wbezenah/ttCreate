@@ -25,6 +25,12 @@ import { MainAssetsComponent } from './components/editors/main/main-assets/main-
 import { MainToolsComponent } from './components/editors/main/main-tools/main-tools.component';
 import { MainEditorComponent } from './components/editors/main/main-editor/main-editor.component';
 import { TooltipDirective } from './directives/tooltip.directive';
+import { DeckAssetsComponent } from './components/editors/deck/deck-assets/deck-assets.component';
+import { DeckEditorComponent } from './components/editors/deck/deck-editor/deck-editor.component';
+import { DeckToolsComponent } from './components/editors/deck/deck-tools/deck-tools.component';
+import { TokenAssetsComponent } from './components/editors/token/token-assets/token-assets.component';
+import { TokenEditorComponent } from './components/editors/token/token-editor/token-editor.component';
+import { TokenToolsComponent } from './components/editors/token/token-tools/token-tools.component';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http);
@@ -44,7 +50,13 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     MainAssetsComponent,
     MainToolsComponent,
     MainEditorComponent,
-    TooltipDirective
+    TooltipDirective,
+    DeckAssetsComponent,
+    DeckEditorComponent,
+    DeckToolsComponent,
+    TokenAssetsComponent,
+    TokenEditorComponent,
+    TokenToolsComponent
   ],
   imports: [
     BrowserModule,

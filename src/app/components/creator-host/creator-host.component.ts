@@ -66,7 +66,6 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateActiveComponents();
 
     this.editorSwitchService.activeEditorUpdate.subscribe((value: EditorType) => {
-      console.log('Recieved new editor: ', value);
       this.updateActiveComponents();
     });
   }
@@ -203,9 +202,8 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateActiveComponents() {
-    console.log('Updating Active Components');
-    this.open_editors = this.editorSwitchService.openEditors;
-    this.activeElements = document.getElementsByClassName(this.editorSwitchService.activeEditor.type.toLowerCase());
+    this.open_editors = this.editorSwitchService.getOpenEditors();
+    this.activeElements = document.getElementsByClassName(this.editorSwitchService.getActiveEditor().type.toLowerCase());
 
     if(!this.activeElements) {
       console.error('ERROR. NO SUCH ELEMENTS');
@@ -226,15 +224,12 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   
   openEditor(event: MouseEvent, index: number) {
-    if((event.target as HTMLElement).classList.contains('close')) {
+    let closeDiv: HTMLElement = document.getElementsByClassName('close').item(index - 1) as HTMLElement;
+    if(closeDiv && closeDiv.contains(event.target as any)) {
+      this.editorSwitchService.closeEditor(index);
       return;
     }
-    console.log('opening');
-    this.editorSwitchService.setActiveEditor(this.editorSwitchService.openEditors[index]);
-  }
-
-  closeEditor(event: MouseEvent, index: number) {
-    console.log('closing');
+    this.editorSwitchService.setActiveEditor(index);
   }
 
   get editorList(): Editor[] {

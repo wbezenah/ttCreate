@@ -2,11 +2,17 @@
  class="tools-window side-window"
 >
     <!-- Insert appropriate tools window via dynamic components -->
-    <div class="main">
+    <div class="main editor">
         <app-main-tools></app-main-tools>
     </div>
-    <div class="board">
+    <div class="board editor">
         <app-board-tools></app-board-tools>
+    </div>
+    <div class="deck editor">
+        <app-deck-tools></app-deck-tools>
+    </div>
+    <div class="token editor">
+        <app-token-tools></app-token-tools>
     </div>
 
 </div>
@@ -19,17 +25,23 @@
             <div class="name">
                 <p>{{ editor.name }}</p>
             </div>
-            <div class="close" *ngIf="editor.closeable" (click)="closeEditor($event, i)">
+            <div class="close" *ngIf="editor.closeable">
                 <img class="close-img" src="../../../assets/titlebar/close-w-10.png" alt="">
             </div>
         </div>
     </div>
     <!-- Insert appropriate editor window via dynamic components -->
-    <div class="main">
+    <div class="main editor">
         <app-main-editor></app-main-editor>
     </div>
-    <div class="board">
+    <div class="board editor">
         <app-board-editor></app-board-editor>
+    </div>
+    <div class="deck editor">
+        <app-deck-editor></app-deck-editor>
+    </div>
+    <div class="token editor">
+        <app-token-editor></app-token-editor>
     </div>
     
 </div>
@@ -38,11 +50,17 @@
  class="assets-window side-window"
 >
     <!-- Insert appropriate assets window via dynamic components -->
-    <div class="main">
+    <div class="main editor">
         <app-main-assets></app-main-assets>
     </div>
-    <div class="board">
+    <div class="board editor">
         <app-board-assets></app-board-assets>
+    </div>
+    <div class="deck editor">
+        <app-deck-assets></app-deck-assets>
+    </div>
+    <div class="token editor">
+        <app-token-assets></app-token-assets>
     </div>
 
 </div>
