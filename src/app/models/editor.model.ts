@@ -6,7 +6,14 @@ export enum EditorType {
   }
 
 export class Editor {
-    type: EditorType;
-    name: string;
-    closeable: boolean;
+
+    constructor(
+      public type: EditorType,
+      public name: string, 
+      public closeable: boolean
+    ) { }
+
+    close() {
+
+    }
 }

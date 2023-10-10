@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, ipcMain, IpcMainEvent, IpcMain } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, IpcMainEvent, IpcMain, globalShortcut } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { IPCChannels, WindowFunc } from '../src/app/shared/electron-com';
@@ -38,10 +38,9 @@ function createModal(parent: BrowserWindow, modalOptions: {title?: string, type?
 
   modalWin.on('closed', () => { 
     modalWin = null 
-    ipcMain.removeAllListeners('modalOptions');
+    ipcMain.removeAllListeners('modalData');
   });
 
-  // Load the HTML dialog box
   modalWin.loadURL(path.join(__dirname, "../src/app/components/modal/modal.html"));
   modalWin.once('ready-to-show', () => { modalWin.show() });
 
@@ -164,6 +163,16 @@ try {
     if (win === null) {
       createWindow();
     }
+  });
+
+  app.on('browser-window-focus', function () {
+    globalShortcut.register("CommandOrControl+R", () => {
+        console.log("CommandOrControl+R is pressed: Shortcut Disabled");
+    });
+  });
+
+  app.on('browser-window-blur', function () {
+    globalShortcut.unregister('CommandOrControl+R');
   });
 
 } catch (e) {

@@ -34,7 +34,7 @@ export class EditorSwitchService {
     });
   }
 
-  get activeEditor(): Editor {
+  getActiveEditor(): Editor {
     return this.active_editor;
   }
 
@@ -42,13 +42,26 @@ export class EditorSwitchService {
     return this.active_editor === editor;
   }
 
-  setActiveEditor(editor: Editor): EditorType {
-    this.active_editor = editor;
-    this.activeEditorUpdate.next(this.activeEditor.type);
+  setActiveEditor(index: number): EditorType {
+    this.active_editor = this.open_editors[index];
+    this.activeEditorUpdate.next(this.active_editor.type);
     return this.active_editor.type;
   }
 
-  get openEditors(): Editor[] {
+  closeEditor(index: number) {
+    if(index == 0) {
+      console.error("ERROR: Attempting to close Main");
+      return;
+    }
+    if(this.active_editor == this.open_editors[index]) {
+      this.active_editor = this.open_editors[index - 1];
+      this.activeEditorUpdate.next(this.active_editor.type);
+    }
+    this.open_editors[index].close();
+    this.open_editors.splice(index, 1);
+  }
+
+  getOpenEditors(): Editor[] {
     return this.open_editors;
   }
 
@@ -59,13 +72,10 @@ export class EditorSwitchService {
   }
 
   private createNewEditor(modalResult: string) {
-    let nEditor: Editor = new Editor();
-    nEditor.closeable = true;
-    nEditor.name = modalResult;
-    nEditor.type = this.tempNewEditorType;
+    let nEditor: Editor = new Editor(this.tempNewEditorType, modalResult, true);
     this.tempNewEditorType = null;
-    this.openEditors.push(nEditor);
+    let nIndex = this.open_editors.push(nEditor) - 1;
     console.log(nEditor);
-    this.setActiveEditor(nEditor);
+    this.setActiveEditor(nIndex);
   }
 }

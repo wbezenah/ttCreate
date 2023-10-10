@@ -5,10 +5,11 @@ import { Editor, EditorType } from '../models/editor.model';
   providedIn: 'root'
 })
 export class ProjectService {
+  private main_editor = new Editor(EditorType.MAIN, 'Main', false);
 
   constructor() { }
 
   getMainEditor(): Editor {
-    return {type: EditorType.MAIN, name: 'Main', closeable: true};
+    return this.main_editor;
   }
 }
