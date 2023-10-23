@@ -26,6 +26,7 @@ export class ProjectService {
 
     firstValueFrom(this.electronService.fileResults).then((value: Buffer[]) => {
       // console.log(value[0].toString());
+      //handle project file contents
     });
   }
 }

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ComponentRef, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { CardInfo } from '../../models/card-info.model';
+import { CardInfo } from '../../models/card.model';
 import { CardHostDirective } from '../../directives/card-host.directive';
 import { CardComponent } from '../card/card.component';
 import { ElectronService } from '../../services/electron.service';
