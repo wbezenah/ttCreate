@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
-import { IpcRendererEvent, ipcRenderer, webFrame } from 'electron';
+import { FileFilter, IpcRendererEvent, ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { IPCChannels } from '../shared/electron-com';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,8 @@ export class ElectronService {
   fs!: typeof fs;
 
   private winSize: {width: number, height: number};
+
+  fileResults: Subject<Buffer[]> = new Subject<Buffer[]>();
 
   constructor() {
     // Conditional imports
@@ -85,6 +88,29 @@ export class ElectronService {
   addRendererListener(channel: string, listener: (event: IpcRendererEvent, args?: any[]) => void) {
     if(this.isElectron && this.ipcRenderer) {
       this.ipcRenderer.on(channel, listener);
+    }
+  }
+
+  openFile(contentType: (FileFilter | {extensions: string[], name: string})[], multiple: boolean){
+    if(this.isElectron && this.ipcRenderer) {
+      if(contentType.length === 0) {
+        contentType.push({extensions: ['*'], name: 'All Files'});
+      }
+
+      this.ipcRenderer.send(IPCChannels.loadFile, {contentType: contentType, multiple: multiple});
+
+      this.ipcRenderer.once(IPCChannels.fileRes, (event: IpcRendererEvent, res: string[]) => {
+        if(multiple) {
+          let buffers = [];
+          for(let filePath of res) {
+            buffers.push(this.fs.readFileSync(filePath));
+          }
+          this.fileResults.next(buffers);
+        } else {
+          const filePath = res[0];
+          this.fileResults.next([this.fs.readFileSync(filePath)]);
+        }
+      });
     }
   }
 }

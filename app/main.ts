@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, ipcMain, IpcMainEvent, IpcMain, globalShortcut } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, IpcMainEvent, IpcMain, globalShortcut, dialog, FileFilter } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { IPCChannels, WindowFunc } from '../src/app/shared/electron-com';
@@ -129,6 +129,16 @@ function createWindow(): BrowserWindow {
 
   ipcMain.on(IPCChannels.closeModal, (event: IpcMainEvent, modalRes: {modalResult?: string}) => {
     win.webContents.send(IPCChannels.modalRes, [modalRes]);
+  });
+
+  ipcMain.on(IPCChannels.loadFile, (event: IpcMainEvent, loadOptions: {contentType?: FileFilter[], multiple: boolean}) => {
+    if(!loadOptions) {
+      win.webContents.send(IPCChannels.fileRes, []);
+    } else if(loadOptions.multiple) {
+      win.webContents.send(IPCChannels.fileRes, dialog.showOpenDialogSync({properties: ['openFile', 'multiSelections'], filters: loadOptions.contentType}));
+    } else {
+      win.webContents.send(IPCChannels.fileRes, dialog.showOpenDialogSync({properties: ['openFile'], filters: loadOptions.contentType}));
+    }
   });
 
   return win;

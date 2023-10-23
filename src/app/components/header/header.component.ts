@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { ElectronService } from '../../services/electron.service';
 import { IPCChannels, WindowFunc } from '../../shared/electron-com';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'app-header',
@@ -10,9 +11,26 @@ import { IPCChannels, WindowFunc } from '../../shared/electron-com';
 export class HeaderComponent implements OnInit, AfterViewInit {
 
   menus: {label: string, open: boolean, submenu: any[]}[] = [
-    { label: 'File', open: false, submenu: [{label: 'Save File'}, {label: 'Open File'}, {label: 'Settings'}, {label: 'Exit'}] },
-    { label: 'Edit', open: false, submenu: [{label: 'Undo'}, {label: 'Redo'}, {label: 'Cut'}, {label: 'Copy'}, {label: 'Paste'}] },
-    { label: 'Help', open: false, submenu: [{label: 'About'}, {label: 'Discord!'}] }
+    { label: 'File', open: false, submenu: [
+        {label: 'Save File', click: () => { console.log('Save File!')}},
+        {label: 'Open File', click: () => { this.projectService.loadProject()}},
+        {label: 'Settings', click: () => {}},
+        {label: 'Exit', click: () => {}}
+      ]
+    },
+    { label: 'Edit', open: false, submenu: [
+        {label: 'Undo', click: () => {}},
+        {label: 'Redo', click: () => {}},
+        {label: 'Cut', click: () => {}},
+        {label: 'Copy', click: () => {}},
+        {label: 'Paste', click: () => {}}
+      ]
+    },
+    { label: 'Help', open: false, submenu: [
+        {label: 'About', click: () => {}},
+        {label: 'Discord!', click: () => {}}
+      ] 
+    }
   ];
 
   menuButtons: HTMLCollectionOf<Element>;
@@ -22,6 +40,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   constructor(
     private electronService: ElectronService,
+    private projectService: ProjectService
   ) { }
 
   ngOnInit(): void {
@@ -79,6 +98,15 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         let titlebarElement: HTMLElement = document.getElementById('titlebar');
         menuElement.style.top = (titlebarElement.getBoundingClientRect().bottom - 4).toString() + 'px';
       }
+    }
+
+    for(let i = 0; i < this.menuDropdowns.length; i++){
+     let menuElement = this.menuDropdowns.item(i) as HTMLElement;
+     let submenuItems = menuElement.getElementsByClassName('submenu-item');
+     for(let j = 0; j < submenuItems.length; j++) {
+      let submenuItem = submenuItems.item(j) as HTMLElement;
+      submenuItem.addEventListener('click', this.menus[i].submenu[j].click);
+     }
     }
   }
 

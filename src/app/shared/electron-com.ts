@@ -11,5 +11,8 @@ export enum IPCChannels {
     windowMax = 'check-window-max',
     createModal = 'create-modal',
     closeModal = 'close-modal',
-    modalRes = 'modal-result'
+    modalRes = 'modal-result',
+    loadFile = 'load-file',
+    saveFile = 'save-file',
+    fileRes = 'file-res'
 }
