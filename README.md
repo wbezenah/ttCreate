@@ -13,15 +13,17 @@ _Currently in development..._
 ### In Progress:
 - bug fixes! known bugs:
     - application flicker on exiting modal window (Electron modals are weird, maybe just implement own modal)
+- Editor Assets!
+    - models: card, deck, board, token
+    - angular component for each model: displaying / editing assets
 - develop a JSON format for eventual saving/loading of projects
+- project service for saving, loading, component work synchronization
 - complete editor functionality for each asset editor
+- titlebar menu functionality... they look nice, but buttons should do something
 - polish modal view for opening a new editor
 
 ### TODO (unordered):
-- models: card, deck, board
-- components: wrappers for card, deck, board
-- services: project service for saving, loading, component work synchronization, settings service for user preferences
-- titlebar menu functionality... they look nice, but buttons should do something
+- settings service for user preferences
 - dynamic updating of current editor mode in creator-window component (fancy for: actually update editor view when changing view)
 
 ### TODO... but in a very very distant future and possibly never:
