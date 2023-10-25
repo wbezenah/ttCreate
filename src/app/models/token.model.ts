@@ -1,4 +1,4 @@
-import { Shape } from "../shared/shapes";
+import { Shape } from "../shared/shapes-math";
 
 export class Token {
     backgroundImg?: string;
