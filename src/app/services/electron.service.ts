@@ -7,6 +7,7 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { IPCChannels } from '../shared/electron-com';
 import { Subject } from 'rxjs';
+import { FileTypeSet } from '../shared/ttc-types';
 
 @Injectable({
   providedIn: 'root'
@@ -94,13 +95,16 @@ export class ElectronService {
   openFile(contentType: (FileFilter | {extensions: string[], name: string})[], multiple: boolean){
     if(this.isElectron && this.ipcRenderer) {
       if(contentType.length === 0) {
-        contentType.push({extensions: ['*'], name: 'All Files'});
+        contentType.push(FileTypeSet.allTypes);
       }
 
       this.ipcRenderer.send(IPCChannels.loadFile, {contentType: contentType, multiple: multiple});
 
       this.ipcRenderer.once(IPCChannels.fileRes, (event: IpcRendererEvent, res: string[]) => {
-        if(multiple) {
+        if(res === undefined) {
+          this.fileResults.next([]);
+        }
+        else if(multiple) {
           let buffers = [];
           for(let filePath of res) {
             buffers.push(this.fs.readFileSync(filePath));

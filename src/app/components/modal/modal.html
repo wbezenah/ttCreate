@@ -20,7 +20,7 @@
     <script>
     const { ipcRenderer } = require("electron")
     function cancel() {
-      ipcRenderer.send("close-modal", "")
+      ipcRenderer.send("close-modal", {})
       this.close();
     }
     

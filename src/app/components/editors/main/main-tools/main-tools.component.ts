@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EditorType } from '../../../../models/editor.model';
+import { EditorType } from '../../../../shared/ttc-types';
 import { EditorSwitchService } from '../../../../services/editor-switch.service';
 
 @Component({

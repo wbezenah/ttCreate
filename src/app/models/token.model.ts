@@ -1,10 +1,14 @@
-import { Shape } from "../shared/shapes-math";
+import { Shape, Square } from "../shared/shapes-math";
+import { AssetType, TTCAsset } from "../shared/ttc-types";
 
-export class Token {
-    backgroundImg?: string;
-    shape: Shape;
+export class Token implements TTCAsset {
 
-    constructor(public title: string) {
+    public readonly type = AssetType.TOKEN;
 
-    }
+    constructor
+    (
+        public name: string,
+        public shape: Shape = new Square(50),
+        public backgroundImgPath: string  = ''
+    ) { }
 }

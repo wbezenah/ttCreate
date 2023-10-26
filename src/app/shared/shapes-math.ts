@@ -21,12 +21,12 @@ class Square implements Shape {
 
     constructor(public sideLength: number) { }
 
-    toRectangle(): Rectangle {
-        return new Rectangle(this.sideLength, this.sideLength);
+    get area() {
+        return this.sideLength * this.sideLength;
     }
 
-    toCircle(): Circle {
-        return new Circle(this.sideLength / 2);
+    get perimeter() {
+        return 4 * this.sideLength;
     }
 }
 
@@ -35,15 +35,12 @@ class Rectangle implements Shape {
 
     constructor(public length: number, public width: number) { }
 
-    toSquare(useWidth = false) {
-        return new Square(useWidth ? this.width : this.length);
+    get area() {
+        return this.length * this.width;
     }
 
-    toCircle(axis?: 'width' | 'length') {
-        if(axis) {
-            return new Circle(axis === 'width' ? this.width : this.length);
-        }
-        return new Circle(Math.max(this.width, this.length) / 2);
+    get perimeter() {
+        return 2*this.length + 2*this.width;
     }
 }
 
@@ -86,14 +83,6 @@ class Circle implements Shape {
     shape_type = 'Circle';
 
     constructor(public radius: number) { }
-
-    toSquare() {
-        return new Square(this.radius * 2);
-    }
-
-    toRectangle() {
-        return new Rectangle(this.radius * 2, this.radius * 2);
-    }
 }
 
 class RegPolygon implements Shape {
@@ -125,7 +114,7 @@ class RegPolygon implements Shape {
 
 type side_spec = 'max' | 'min' | number;
 
-function toSquare(shape: Shape, use_for_side: side_spec = 'max'): Square | null {
+function toSquare(shape: Shape, use_for_side: side_spec = 'max'): Square {
     switch(shape.shape_type) {
         case 'Square':
             return shape as Square;
@@ -150,7 +139,7 @@ function toSquare(shape: Shape, use_for_side: side_spec = 'max'): Square | null 
     }
 }
 
-function toRectangle(shape: Shape, use_for_length: side_spec, use_for_width: side_spec): Rectangle | null {
+function toRectangle(shape: Shape, use_for_length: side_spec = 'max', use_for_width: side_spec = 'max'): Rectangle {
     switch(shape.shape_type) {
         case 'Square':
             const square = shape as Square;
@@ -178,7 +167,7 @@ function toRectangle(shape: Shape, use_for_length: side_spec, use_for_width: sid
     }
 }
 
-function toCircle(shape: Shape, use_for_radius: side_spec): Circle | null {
+function toCircle(shape: Shape, use_for_radius: side_spec = 'max'): Circle {
     switch(shape.shape_type) {
         case 'Square':
             const square = shape as Square;
@@ -204,7 +193,7 @@ function toCircle(shape: Shape, use_for_radius: side_spec): Circle | null {
     }
 }
 
-function toRegPolygon(shape: Shape, use_for_side: side_spec, num_sides: number = RegPolygon.MIN_SIDES): RegPolygon | null {
+function toRegPolygon(shape: Shape, use_for_side: side_spec = 'max', num_sides: number = RegPolygon.MIN_SIDES): RegPolygon {
     switch(shape.shape_type) {
         case 'Square':
             const square = shape as Square;

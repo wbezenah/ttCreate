@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Editor, EditorType } from '../models/editor.model';
+import { Editor} from '../models/editor.model';
+import { ETYPE_TO_ATYPE, EditorType } from '../shared/ttc-types';
 import { ProjectService } from './project.service';
 import { ElectronService } from './electron.service';
 import { IPCChannels } from '../shared/electron-com';
@@ -12,7 +13,7 @@ import { IpcRendererEvent } from 'electron';
 export class EditorSwitchService {
 
   private active_editor: Editor;
-  private open_editors: Editor[] = [];
+  private open_editors: Editor[] = [new Editor(EditorType.MAIN, 'Main', false, -1)];
 
   private tempNewEditorType: EditorType | null = null;
   
@@ -22,13 +23,14 @@ export class EditorSwitchService {
     private electronService: ElectronService,
     private projectService: ProjectService
   ) {
-    this.open_editors.push(this.projectService.getMainEditor());
     this.active_editor = this.open_editors[0];
 
     this.electronService.addRendererListener(IPCChannels.modalRes, (event: IpcRendererEvent, args: any[]) => {
+      console.log(args);
       for(let arg of args) {
         if('modalResult' in arg) {
-          this.createNewEditor(arg.modalResult);
+          const index = this.projectService.newAsset(ETYPE_TO_ATYPE(this.tempNewEditorType), arg.modalResult);
+          this.createNewEditor(arg.modalResult, index);
         }
       }
     });
@@ -71,8 +73,8 @@ export class EditorSwitchService {
     this.electronService.send(IPCChannels.createModal, {title: modalTitle});
   }
 
-  private createNewEditor(modalResult: string) {
-    let nEditor: Editor = new Editor(this.tempNewEditorType, modalResult, true);
+  private createNewEditor(name: string, assetIndex: number) {
+    let nEditor: Editor = new Editor(this.tempNewEditorType, name, true, assetIndex);
     this.tempNewEditorType = null;
     let nIndex = this.open_editors.push(nEditor) - 1;
     console.log(nEditor);

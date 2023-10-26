@@ -31,6 +31,7 @@ import { DeckToolsComponent } from './components/editors/deck/deck-tools/deck-to
 import { TokenAssetsComponent } from './components/editors/token/token-assets/token-assets.component';
 import { TokenEditorComponent } from './components/editors/token/token-editor/token-editor.component';
 import { TokenToolsComponent } from './components/editors/token/token-tools/token-tools.component';
+import { TokenComponent } from './components/asset-types/token/token.component';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http);
@@ -56,7 +57,8 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     DeckToolsComponent,
     TokenAssetsComponent,
     TokenEditorComponent,
-    TokenToolsComponent
+    TokenToolsComponent,
+    TokenComponent
   ],
   imports: [
     BrowserModule,

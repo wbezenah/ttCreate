@@ -1,11 +1,12 @@
 import { AfterViewInit, Component, ComponentRef, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { CardInfo } from '../../models/card.model';
+// import { CardInfo } from '../../models/card.model';
 import { CardHostDirective } from '../../directives/card-host.directive';
 import { CardComponent } from '../card/card.component';
 import { ElectronService } from '../../services/electron.service';
 import { IPCChannels } from '../../shared/electron-com';
 import { EditorSwitchService } from '../../services/editor-switch.service';
-import { Editor, EditorType } from '../../models/editor.model';
+import { Editor } from '../../models/editor.model';
+import { EditorType } from '../../shared/ttc-types';
 
 enum Resize {
   NONE = 0,
@@ -21,7 +22,7 @@ enum Resize {
 export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   componentRefs: ComponentRef<CardComponent>[] = [];
-  cards: CardInfo[] = [];
+  // cards: CardInfo[] = [];
 
   private editorWindowElement: HTMLElement;
   private toolsWindowElement: HTMLElement;

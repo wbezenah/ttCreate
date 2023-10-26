@@ -13,3 +13,30 @@
     margin: 0;
     font-size: 12px;
 }
+
+.tools {
+    padding-top: 20px;
+    display: grid;
+    justify-items: center;
+
+    grid-template-columns: repeat( auto-fit, minmax(100px, 1fr) );
+}
+
+.button-area {
+    margin: 0 0 20px 0;
+}
+
+.btn {
+    height: 50px;
+    width: 50px;
+    border: none;
+    border-radius: 6px;
+}
+
+.btn:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.btn:active {
+    background-color: rgba(255, 255, 255, 0.6);
+}

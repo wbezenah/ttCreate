@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
-import { CardInfo } from '../../models/card.model';
+import { Card } from '../../models/card.model';
+// import { CardInfo } from '../../models/card.model';
 
 @Component({
   selector: 'app-card',
@@ -7,7 +8,8 @@ import { CardInfo } from '../../models/card.model';
   styleUrls: ['./card.component.css']
 })
 export class CardComponent implements OnInit {
-  cardInfo: CardInfo = {title: 'New Card'};
+  // cardInfo: CardInfo = {title: 'New Card'};
+  cardInfo: Card;
 
   @Input('width') width: number;
   @Input('height') height: number;
