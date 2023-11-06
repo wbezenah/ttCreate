@@ -5,10 +5,10 @@ function r2d (rad: number) { return rad * 180 / Math.PI; };
 function d2r (deg: number) { return deg * Math.PI / 180; };
 function roundTo (n: number, round_to: number) { return Math.round(n * (10**round_to)) / (10**round_to); };
 
-function calcTriAngles(a: number, b: number, c: number, round_to = 4) {
-    const ab = roundTo(r2d(Math.acos((a**2 + b**2 - c**2) / (2 * a * b))), round_to);
-    const bc = roundTo(r2d(Math.acos((b**2 + c**2 - a**2) / (2 * b * c))), round_to);
-    const ac = roundTo(180 - ab - bc, round_to);
+function calcTriAngles(a: number, b: number, c: number, round_to_n = 4) {
+    const ab = roundTo(r2d(Math.acos((a**2 + b**2 - c**2) / (2 * a * b))), round_to_n);
+    const bc = roundTo(r2d(Math.acos((b**2 + c**2 - a**2) / (2 * b * c))), round_to_n);
+    const ac = roundTo(180 - ab - bc, round_to_n);
     return {theta_ab: ab, theta_bc: bc, theta_ac: ac};
 }
 
@@ -194,22 +194,23 @@ function toCircle(shape: Shape, use_for_radius: side_spec = 'max'): Circle {
 }
 
 function toRegPolygon(shape: Shape, use_for_side: side_spec = 'max', num_sides: number = RegPolygon.MIN_SIDES): RegPolygon {
+    const rp_num_sides = Math.max(num_sides, RegPolygon.MIN_SIDES);
     switch(shape.shape_type) {
         case 'Square':
             const square = shape as Square;
-            return new RegPolygon(Math.max(num_sides, 4), square.sideLength);
+            return new RegPolygon(rp_num_sides, square.sideLength);
             
         case 'Rectangle':
             const rect = shape as Rectangle;
-            return new RegPolygon(Math.max(num_sides, 4), use_for_side === 'max' ? Math.max(rect.length, rect.width) : use_for_side === 'min' ? Math.min(rect.length, rect.width) : use_for_side >= 1 ? rect.width : rect.length);
+            return new RegPolygon(rp_num_sides, use_for_side === 'max' ? Math.max(rect.length, rect.width) : use_for_side === 'min' ? Math.min(rect.length, rect.width) : use_for_side >= 1 ? rect.width : rect.length);
 
         case 'Triangle':
             const tri_sides = (shape as Triangle).sides;
-            return new RegPolygon(Math.max(num_sides, 4), use_for_side === 'max' ? Math.max(...Object.values(tri_sides)) : use_for_side === 'min' ? Math.min(...Object.values(tri_sides)) : use_for_side >= 2 ? tri_sides.side_c : use_for_side === 1 ? tri_sides.side_b : tri_sides.side_a);
+            return new RegPolygon(rp_num_sides, use_for_side === 'max' ? Math.max(...Object.values(tri_sides)) : use_for_side === 'min' ? Math.min(...Object.values(tri_sides)) : use_for_side >= 2 ? tri_sides.side_c : use_for_side === 1 ? tri_sides.side_b : tri_sides.side_a);
 
         case 'Circle':
             const circle = shape as Circle;
-            return new RegPolygon(num_sides, circle.radius);
+            return new RegPolygon(rp_num_sides, circle.radius);
 
         case 'RegPolygon':
             return shape as RegPolygon;

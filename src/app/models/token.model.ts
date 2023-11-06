@@ -7,7 +7,7 @@ export class Token implements TTCAsset {
 
     constructor
     (
-        public name: string,
+        public name: string = '',
         public shape: Shape = new Square(50),
         public backgroundImgPath: string  = ''
     ) { }

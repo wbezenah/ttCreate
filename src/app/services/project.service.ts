@@ -8,15 +8,14 @@ import { firstValueFrom } from 'rxjs';
 })
 export class ProjectService {
 
-  // private loaded_project: Project = new Project;
-  private loaded_project: Map<AssetType, any[]> = new Map<AssetType, any[]>(
+  public loaded_project: Map<AssetType, any[]> = new Map<AssetType, any[]>(
     Object.values(AssetType).map((value: string) => { return [value as AssetType, []]})
   );
 
   constructor(
     private electronService: ElectronService
   ) {
-    this.loaded_project.set
+    // console.log(JSON.stringify(Object.fromEntries(this.loaded_project)));
   }
 
   newAsset(assetType: AssetType, title: string): number {
@@ -36,5 +35,15 @@ export class ProjectService {
       // console.log(value[0].toString());
       //handle project file contents
     });
+  }
+
+  updateAsset(assetType: AssetType, index: number, ...args: {property: string, val: any}[]) {
+    if(index >= this.loaded_project.get(assetType).length) { return; }
+    let asset = this.loaded_project.get(assetType)[index];
+    for(let arg of args) {
+      if(arg.property in asset) {
+        asset[arg.property] = arg.val;
+      }
+    }
   }
 }

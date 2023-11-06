@@ -1,4 +1,4 @@
-import { Token } from "@angular/compiler";
+import { Token } from "../models/token.model";
 import { Board } from "../models/board.model";
 import { Deck } from "../models/deck.model";
 import { Card } from "../models/card.model";

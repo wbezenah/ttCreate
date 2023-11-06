@@ -12,7 +12,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
-import { CardComponent } from './components/card/card.component';
+import { CardComponent } from './components/asset-types/card/card.component';
 import { CardHostDirective } from './directives/card-host.directive';
 import { DragResizeDirective } from './directives/drag-resize.directive';
 
