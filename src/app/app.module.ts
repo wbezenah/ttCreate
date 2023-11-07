@@ -32,6 +32,7 @@ import { TokenAssetsComponent } from './components/editors/token/token-assets/to
 import { TokenEditorComponent } from './components/editors/token/token-editor/token-editor.component';
 import { TokenToolsComponent } from './components/editors/token/token-tools/token-tools.component';
 import { TokenComponent } from './components/asset-types/token/token.component';
+import { AssetHostDirective } from './directives/asset-host.directive';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http);
@@ -58,7 +59,8 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     TokenAssetsComponent,
     TokenEditorComponent,
     TokenToolsComponent,
-    TokenComponent
+    TokenComponent,
+    AssetHostDirective
   ],
   imports: [
     BrowserModule,

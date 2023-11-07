@@ -1,13 +1,12 @@
-/* .token {
-    background-color: blue;
-} */
-
-
-.rectangle {
-    background-color: lightblue;
+.token {
+    background-size: contain;
 }
 
+/* .rectangle {
+    background-color: lightblue;
+} */
+
 .circle {
-    background-color: lightpink;
+    /* background-color: lightpink; */
     border-radius: 50%;
 }

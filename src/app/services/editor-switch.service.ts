@@ -26,7 +26,7 @@ export class EditorSwitchService {
     this.active_editor = this.open_editors[0];
 
     this.electronService.addRendererListener(IPCChannels.modalRes, (event: IpcRendererEvent, args: any[]) => {
-      console.log(args);
+      // console.log(args);
       for(let arg of args) {
         if('modalResult' in arg) {
           const index = this.projectService.newAsset(ETYPE_TO_ATYPE(this.tempNewEditorType), arg.modalResult);

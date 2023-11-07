@@ -9,6 +9,6 @@ export class Token implements TTCAsset {
     (
         public name: string = '',
         public shape: Shape = new Square(50),
-        public backgroundImgPath: string  = ''
+        public backgroundImgURL: string  = ''
     ) { }
 }

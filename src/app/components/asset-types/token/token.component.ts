@@ -10,10 +10,14 @@ import { Circle, Rectangle, Shape, Square, toRectangle } from '../../../shared/s
 })
 export class TokenComponent implements OnInit, AfterViewInit{
   
-  private token_info: Token = new Token();
+  public tokenInfo: Token = new Token();
   
   width: number = 50;
   height: number = 50;
+
+  get backgroundImage():string {
+    return `url('${this.tokenInfo.backgroundImgURL}')`;
+  }
 
   constructor(private electronService: ElectronService) {}
 
@@ -22,50 +26,28 @@ export class TokenComponent implements OnInit, AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    switch(this.token_info.shape.shape_type.toLowerCase()) {
+    switch(this.tokenInfo.shape.shape_type.toLowerCase()) {
       case 'square':
-        const square = this.token_info.shape as Square;
+        const square = this.tokenInfo.shape as Square;
         this.width = square.sideLength;
         this.height = square.sideLength;
-        this.token_info.shape = toRectangle(square);
+        this.tokenInfo.shape = toRectangle(square);
         break;
       case 'rectangle':
-        const rect = this.token_info.shape as Rectangle;
+        const rect = this.tokenInfo.shape as Rectangle;
         this.width = rect.width;
         this.height = rect.length;
         break;
       case 'circle':
-        const circ = this.token_info.shape as Circle;
+        const circ = this.tokenInfo.shape as Circle;
         this.width = this.height = circ.radius * 2;
         break;
       default:
         break;
     }
-    let shape_element = document.getElementsByClassName('shape').item(0) as HTMLElement;
-    shape_element.classList.add(this.token_info.shape.shape_type.toLowerCase());
+    let token_element = document.getElementsByClassName('token').item(0) as HTMLElement;
+    token_element.classList.add(this.tokenInfo.shape.shape_type.toLowerCase());
     // console.log(shape_element)
-  }
-
-  get tokenInfo(): Token {
-    return JSON.parse(JSON.stringify(this.token_info));
-  }
-
-  set tokenInfo(token: Token) {
-    if(this.token_info.shape.shape_type !== token.shape.shape_type) {
-      //handle changing shape
-    }
-    this.token_info = token;
-  }
-
-  set shape(shape: Shape) {
-    if(this.token_info.shape.shape_type !== shape.shape_type) {
-      //handle changing shape
-    }
-    this.token_info.shape = shape;
-  }
-
-  set backgroundIMG(img_path: string) {
-    this.token_info.backgroundImgPath = img_path;
   }
 
 }
