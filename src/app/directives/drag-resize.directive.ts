@@ -14,14 +14,14 @@ const enum Status {
 }
 
 @Directive({
-  selector: '[appDragResize]'
+  selector: '[dragResize]'
 })
 export class DragResizeDirective implements OnInit {
 
   @Input('boundary') boundary?: {top: number, left: number, height: number, width: number};
-  @Input('resizable') resizable: boolean = false;
-  @Input('draggable') draggable: boolean = false;
-  @Input('resizableSides') resizable_sides?: {top: boolean, left: boolean, right: boolean, bottom: boolean};
+  @Input('resizable') resizable: boolean = true;
+  @Input('draggable') draggable: boolean = true;
+  @Input('resizableSides') resizable_sides: {top: boolean, left: boolean, right: boolean, bottom: boolean} = {top: true, left: true, right: true, bottom: true};
 
   private readonly MARGIN = 6;
 
