@@ -19,7 +19,9 @@ export class TokenComponent implements OnInit, AfterViewInit{
     return `url('${this.tokenInfo.backgroundImgURL}')`;
   }
 
-  constructor(private electronService: ElectronService) {}
+  constructor(
+    private electronService: ElectronService
+  ) {}
 
   ngOnInit(): void {
 
@@ -48,6 +50,12 @@ export class TokenComponent implements OnInit, AfterViewInit{
     let token_element = document.getElementsByClassName('token').item(0) as HTMLElement;
     token_element.classList.add(this.tokenInfo.shape.shape_type.toLowerCase());
     // console.log(shape_element)
+  }
+
+  private placeToken() {
+    if(this.tokenInfo) {
+      
+    }
   }
 
 }
