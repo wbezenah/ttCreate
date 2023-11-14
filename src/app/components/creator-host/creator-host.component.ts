@@ -138,8 +138,10 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private resizing: Resize = Resize.NONE;
+  private clicking: boolean = false;
 
   @HostListener('mousedown', ['$event']) onClick(event: MouseEvent) {
+    this.clicking = true;
     const editorRect = this.editorWindowElement.getBoundingClientRect();
     if(event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX && event.clientX >= editorRect.left) {
       this.resizing = Resize.LEFT;
@@ -155,12 +157,12 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
     let assetsRect = this.assetsWindowElement.getBoundingClientRect();
     let toolsRect = this.toolsWindowElement.getBoundingClientRect();
 
-    if(this.resizing === Resize.NONE && event.clientX >= editorRect.left && event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX) {
+    if(this.resizing === Resize.NONE && !this.clicking && event.clientX >= editorRect.left && event.clientX <= editorRect.left + this.RESIZE_MARGIN_PX) {
       document.body.style.cursor = 'ew-resize';
       //case left
       this.toolsWindowElement.classList.add('resize');
     }
-    else if(this.resizing === Resize.NONE && event.clientX <= editorRect.right && event.clientX >= editorRect.right - this.RESIZE_MARGIN_PX) {
+    else if(this.resizing === Resize.NONE && !this.clicking && event.clientX <= editorRect.right && event.clientX >= editorRect.right - this.RESIZE_MARGIN_PX) {
       document.body.style.cursor = 'ew-resize';
       //case right
       this.assetsWindowElement.classList.add('resize');
@@ -199,6 +201,7 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('window:mouseup', ['$event']) onMouseUp(event: MouseEvent) {
     this.resizing = Resize.NONE;
+    this.clicking = false;
     document.body.style.cursor = 'auto';
   }
 
