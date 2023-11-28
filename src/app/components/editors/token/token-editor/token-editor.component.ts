@@ -23,9 +23,10 @@ export class TokenEditorComponent implements OnInit, OnDestroy {
     private editorSwitchService: EditorSwitchService
   ) { }
 
-  private editorSub: Subscription;
+  private subscriptions: Subscription[] = [];
+
   ngOnInit(): void {
-    this.editorSub = this.editorSwitchService.activeEditorUpdate.subscribe(
+    this.subscriptions.push(this.editorSwitchService.activeEditorUpdate.subscribe(
       (value: EditorType) => {
         if(value === EditorType.TOKEN) { 
           this.activeToken = this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().index);
@@ -36,10 +37,12 @@ export class TokenEditorComponent implements OnInit, OnDestroy {
         }
         else { this.activeToken = null; }
       }
-    );
+    ));
   }
 
   ngOnDestroy(): void {
-    this.editorSub.unsubscribe();
+    for(let sub of this.subscriptions) {
+      sub.unsubscribe();
+    }
   }
 }

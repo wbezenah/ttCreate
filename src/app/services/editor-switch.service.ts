@@ -45,6 +45,8 @@ export class EditorSwitchService {
   }
 
   setActiveEditor(index: number): EditorType {
+    if(this.active_editor.equals(this.open_editors[index])) { return this.active_editor.type; }
+      
     this.active_editor = this.open_editors[index];
     this.activeEditorUpdate.next(this.active_editor.type);
     return this.active_editor.type;

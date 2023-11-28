@@ -175,7 +175,7 @@ function toCircle(shape: Shape, use_for_radius: side_spec = 'max'): Circle {
             
         case 'Rectangle':
             const rect = shape as Rectangle;
-            return new Circle(use_for_radius === 'max' ? Math.max(rect.length, rect.width) : use_for_radius === 'min' ? Math.min(rect.length, rect.width) : use_for_radius >= 1 ? rect.width : rect.length);
+            return new Circle(use_for_radius === 'max' ? Math.max(rect.length, rect.width) / 2 : use_for_radius === 'min' ? Math.min(rect.length, rect.width) / 2 : use_for_radius >= 1 ? rect.width / 2 : rect.length / 2);
 
         case 'Triangle':
             const tri_sides = (shape as Triangle).sides;

@@ -12,4 +12,8 @@ export class Editor {
     close() {
 
     }
+
+    equals(e2: Editor): boolean {
+      return this.type == e2.type && this.index == e2.index;
+    }
 }

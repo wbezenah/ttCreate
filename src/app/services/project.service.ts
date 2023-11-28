@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
 import { ATYPE_TO_A, AssetType } from '../shared/ttc-types';
 import { ElectronService } from './electron.service';
-import { firstValueFrom } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
 
-  public loaded_project: Map<AssetType, any[]> = new Map<AssetType, any[]>(
+  loaded_project: Map<AssetType, any[]> = new Map<AssetType, any[]>(
     Object.values(AssetType).map((value: string) => { return [value as AssetType, []]})
   );
+
+  assetUpdate: Subject<{type: AssetType, index: number, updates: {property: string, val: any}[]}> = new Subject();
 
   constructor(
     private electronService: ElectronService
@@ -19,8 +21,9 @@ export class ProjectService {
   }
 
   newAsset(assetType: AssetType, title: string): number {
-    let asset = new (ATYPE_TO_A(assetType) as any)(title);
-    return this.loaded_project.get(assetType).push(asset) - 1;
+    let assets = this.loaded_project.get(assetType);
+    let asset = new (ATYPE_TO_A(assetType) as any)(title, assets.length);
+    return assets.push(asset) - 1;
   }
 
   getAsset(assetType: AssetType, index: number) {
@@ -39,11 +42,16 @@ export class ProjectService {
 
   updateAsset(assetType: AssetType, index: number, ...args: {property: string, val: any}[]) {
     if(index >= this.loaded_project.get(assetType).length) { return; }
+
     let asset = this.loaded_project.get(assetType)[index];
+    let valid_res = [];
     for(let arg of args) {
       if(arg.property in asset) {
         asset[arg.property] = arg.val;
+        valid_res.push(arg);
       }
     }
+    console.log(asset);
+    this.assetUpdate.next({type: assetType, index: index, updates: valid_res});
   }
 }

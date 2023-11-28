@@ -20,7 +20,7 @@
 <div
  class="editor-window center-window"
 >
-    <div class="container-fluid open-windows">
+    <div class="container-fluid open-editors">
         <div class="tab" *ngFor="let editor of editorList; index as i" (click)="openEditor($event, i)">
             <div class="name">
                 <p>{{ editor.name }}</p>

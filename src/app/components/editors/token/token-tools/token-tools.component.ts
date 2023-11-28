@@ -5,6 +5,7 @@ import { AssetType, EditorType, FileTypeSet } from '../../../../shared/ttc-types
 import { ProjectService } from '../../../../services/project.service';
 import { EditorSwitchService } from '../../../../services/editor-switch.service';
 import { Token } from '../../../../models/token.model';
+import { toCircle, toRectangle } from '../../../../shared/shapes-math';
 
 @Component({
   selector: 'app-token-tools',
@@ -20,20 +21,30 @@ export class TokenToolsComponent implements OnInit, OnDestroy {
     private editorSwitchService: EditorSwitchService
   ) { }
 
-  private editorSub: Subscription;
+  private subscriptions: Subscription[] = [];
+
   ngOnInit(): void {
-    this.editorSub = this.editorSwitchService.activeEditorUpdate.subscribe(
+    this.subscriptions.push(this.editorSwitchService.activeEditorUpdate.subscribe(
       (value: EditorType) => {
         if(value === EditorType.TOKEN) { 
           this.activeToken = this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().index);
         }
         else { this.activeToken = null; }
       }
-    );
+    ),
+    this.projectService.assetUpdate.subscribe(
+      (value: {type: AssetType, index: number, updates: {property: string, val: any}[]}) => {
+        if(value.type == AssetType.TOKEN && value.index == this.activeToken.index) {
+          //Add handlers for updated asset... might not be necessary in tools component
+        }
+      }
+    ));
   }
 
   ngOnDestroy(): void {
-    this.editorSub.unsubscribe();
+    for(let sub of this.subscriptions) {
+      sub.unsubscribe();
+    }
   }
 
   onNewImage() {
@@ -48,6 +59,14 @@ export class TokenToolsComponent implements OnInit, OnDestroy {
         fileReader.readAsDataURL(new Blob(value));
       }
     });
+  }
+
+  setCirc() {
+    this.projectService.updateAsset(AssetType.TOKEN, this.activeToken.index, {property: 'shape', val: toCircle(this.activeToken.shape)});
+  }
+
+  setRect() {
+    this.projectService.updateAsset(AssetType.TOKEN, this.activeToken.index, {property: 'shape', val: toRectangle(this.activeToken.shape)});
   }
 
   setBackgroundImage() {

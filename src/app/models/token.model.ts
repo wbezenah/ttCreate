@@ -1,14 +1,16 @@
-import { Shape, Square } from "../shared/shapes-math";
+import { Rectangle, Shape, Square } from "../shared/shapes-math";
 import { AssetType, TTCAsset } from "../shared/ttc-types";
 
 export class Token implements TTCAsset {
-
-    public readonly type = AssetType.TOKEN;
+    readonly type = AssetType.TOKEN;
 
     constructor
     (
-        public name: string = '',
-        public shape: Shape = new Square(50),
-        public backgroundImgURL: string  = ''
+        public name: string,
+        public index: number,
+        public shape: Shape = new Rectangle(50, 50),
+        public backgroundImgURL: string  = '',
+        public top: number = 0,
+        public left: number = 0
     ) { }
 }
