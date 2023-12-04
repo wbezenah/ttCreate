@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
-import { Card } from '../../../models/card.model';
+import { Card } from '../../../models/assets/card.model';
 // import { CardInfo } from '../../models/card.model';
 
 @Component({

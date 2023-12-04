@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ProjectService } from '../../../../services/project.service';
 import { EditorSwitchService } from '../../../../services/editor-switch.service';
-import { Token } from '../../../../models/token.model';
+import { Token } from '../../../../models/assets/token.model';
 import { AssetType, EditorType } from '../../../../shared/ttc-types';
 import { Subscription } from 'rxjs';
 import { AssetHostDirective } from '../../../../directives/asset-host.directive';
@@ -15,6 +15,8 @@ import { TokenComponent } from '../../../asset-types/token/token.component';
 export class TokenEditorComponent implements OnInit, OnDestroy {
   
   private activeToken: Token;
+  private componentRef: ComponentRef<TokenComponent>;
+  private subscriptions: Subscription[] = [];
 
   @ViewChild(AssetHostDirective, {static: true}) assetHost!: AssetHostDirective;
 
@@ -23,17 +25,15 @@ export class TokenEditorComponent implements OnInit, OnDestroy {
     private editorSwitchService: EditorSwitchService
   ) { }
 
-  private subscriptions: Subscription[] = [];
-
   ngOnInit(): void {
     this.subscriptions.push(this.editorSwitchService.activeEditorUpdate.subscribe(
       (value: EditorType) => {
-        if(value === EditorType.TOKEN) { 
-          this.activeToken = this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().index);
+        if(value === EditorType.TOKEN) {
+          this.activeToken = this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().assetIndex);
           const viewContainerRef = this.assetHost.viewContainerRef;
           viewContainerRef.clear();
-          const componentRef = viewContainerRef.createComponent<TokenComponent>(TokenComponent);
-          componentRef.instance.tokenInfo = this.activeToken;
+          this.componentRef = viewContainerRef.createComponent<TokenComponent>(TokenComponent);
+          this.componentRef.instance.tokenInfo = this.activeToken;
         }
         else { this.activeToken = null; }
       }
@@ -43,6 +43,9 @@ export class TokenEditorComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     for(let sub of this.subscriptions) {
       sub.unsubscribe();
+    }
+    if(this.componentRef) {
+      this.componentRef.destroy();
     }
   }
 }

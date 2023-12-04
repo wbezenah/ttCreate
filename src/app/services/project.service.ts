@@ -42,7 +42,6 @@ export class ProjectService {
 
   updateAsset(assetType: AssetType, index: number, ...args: {property: string, val: any}[]) {
     if(index >= this.loaded_project.get(assetType).length) { return; }
-
     let asset = this.loaded_project.get(assetType)[index];
     let valid_res = [];
     for(let arg of args) {
@@ -51,7 +50,6 @@ export class ProjectService {
         valid_res.push(arg);
       }
     }
-    console.log(asset);
     this.assetUpdate.next({type: assetType, index: index, updates: valid_res});
   }
 }

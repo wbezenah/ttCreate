@@ -25,7 +25,7 @@ export class TokenAssetsComponent implements OnInit, OnDestroy {
     this.editorSub = this.editorSwitchService.activeEditorUpdate.subscribe(
       (value: EditorType) => {
         if(value === EditorType.TOKEN) { 
-          this.activeToken = this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().index);
+          this.activeToken = this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().assetIndex);
         }
         else { this.activeToken = null; }
       }

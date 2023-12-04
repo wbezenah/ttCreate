@@ -1,5 +1,5 @@
-import { Rectangle, Shape, Square } from "../shared/shapes-math";
-import { AssetType, TTCAsset } from "../shared/ttc-types";
+import { Rectangle, Shape, Square } from "../../shared/shapes-math";
+import { AssetType, TTCAsset } from "../../shared/ttc-types";
 
 export class Token implements TTCAsset {
     readonly type = AssetType.TOKEN;

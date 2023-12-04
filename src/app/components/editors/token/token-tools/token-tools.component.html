@@ -3,12 +3,12 @@
 </div>
 <div class="tools container-fluid">
     <div class="button-area">
-        <button class="btn board" appTooltip tooltip="New Image" direction="bottom" (click)="onNewImage()">
+        <button class="btn board" appTooltip tooltip="New Image" direction="bottom" (click)="onNewImage(false)">
             IMG
         </button>
     </div>
     <div class="button-area">
-        <button class="btn board" appTooltip tooltip="Set Background Image" direction="bottom" (click)="setBackgroundImage()">
+        <button class="btn board" appTooltip tooltip="Set Background Image" direction="bottom" (click)="onNewImage(true)">
             BACK
         </button>
     </div>

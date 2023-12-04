@@ -1,7 +1,7 @@
-import { Token } from "../models/token.model";
-import { Board } from "../models/board.model";
-import { Deck } from "../models/deck.model";
-import { Card } from "../models/card.model";
+import { Token } from "../models/assets/token.model";
+import { Board } from "../models/assets/board.model";
+import { Deck } from "../models/assets/deck.model";
+import { Card } from "../models/assets/card.model";
 
 export { TTCAsset, AssetType, EditorType, FileTypeSet }
 export { ETYPE_TO_ATYPE, ATYPE_TO_ETYPE, ATYPE_TO_A }

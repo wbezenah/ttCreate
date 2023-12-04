@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Token } from '../../../models/token.model';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Token } from '../../../models/assets/token.model';
 import { ElectronService } from '../../../services/electron.service';
 import { Circle, Rectangle, Shape, Square, toRectangle } from '../../../shared/shapes-math';
 import { ProjectService } from '../../../services/project.service';
@@ -32,7 +32,8 @@ export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
 
   constructor(
     private electronService: ElectronService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private elRef: ElementRef
   ) {
   }
 
@@ -52,8 +53,6 @@ export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
 
   ngOnDestroy(): void {
     const boundingRect = this.token_element.getBoundingClientRect();
-    console.log(this.token_element)
-    console.log(boundingRect);
     this.projectService.updateAsset(AssetType.TOKEN, this.tokenInfo.index, {property: 'top', val: boundingRect.top}, {property: 'left', val: boundingRect.left});
     for(let sub of this.subscriptions) {
       sub.unsubscribe();
@@ -62,9 +61,10 @@ export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
 
   ngAfterViewInit(): void {
     this.token_element = document.getElementsByClassName('token-comp').item(0) as HTMLElement;
-    console.log(this.tokenInfo);
     this.token_element.style.left = this.tokenInfo.left + 'px';
     this.token_element.style.top = this.tokenInfo.top + 'px';
+
+    console.log(this.token_element)
 
     this.updateDisplayShape();
   }

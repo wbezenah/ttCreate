@@ -4,7 +4,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { AssetType, EditorType, FileTypeSet } from '../../../../shared/ttc-types';
 import { ProjectService } from '../../../../services/project.service';
 import { EditorSwitchService } from '../../../../services/editor-switch.service';
-import { Token } from '../../../../models/token.model';
+import { Token } from '../../../../models/assets/token.model';
 import { toCircle, toRectangle } from '../../../../shared/shapes-math';
 
 @Component({
@@ -27,7 +27,7 @@ export class TokenToolsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.editorSwitchService.activeEditorUpdate.subscribe(
       (value: EditorType) => {
         if(value === EditorType.TOKEN) { 
-          this.activeToken = this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().index);
+          this.activeToken = this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().assetIndex);
         }
         else { this.activeToken = null; }
       }
@@ -47,18 +47,23 @@ export class TokenToolsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNewImage() {
+  onNewImage(background = false) {
     this.electronService.openFile([FileTypeSet.imageTypes], false);
-    firstValueFrom(this.electronService.fileResults).then((value: Buffer[]) => {
-      // console.log(value);
-      if(value.length === 1){
-        const fileReader = new FileReader;
-        fileReader.onload = () => {
-          this.projectService;
+    firstValueFrom(this.electronService.fileResults).then(
+      (value: Buffer[]) => {
+        if(value.length === 1){
+          const fileReader = new FileReader;
+          fileReader.onload = () => {
+            if(background) {
+              this.projectService.updateAsset(AssetType.TOKEN, this.activeToken.index, {property: 'backgroundImgURL', val: (fileReader.result as string)});
+            }else {
+              //add image to token as asset
+            }
+          }
+          fileReader.readAsDataURL(new Blob(value));
         }
-        fileReader.readAsDataURL(new Blob(value));
       }
-    });
+    );
   }
 
   setCirc() {
@@ -67,24 +72,5 @@ export class TokenToolsComponent implements OnInit, OnDestroy {
 
   setRect() {
     this.projectService.updateAsset(AssetType.TOKEN, this.activeToken.index, {property: 'shape', val: toRectangle(this.activeToken.shape)});
-  }
-
-  setBackgroundImage() {
-    this.electronService.openFile([FileTypeSet.imageTypes], false);
-    firstValueFrom(this.electronService.fileResults).then(
-      (value: Buffer[]) => {
-        if(value.length === 1) {
-          const fileReader = new FileReader;
-          fileReader.onload = () => {
-            if(this.activeToken) { 
-              this.activeToken.backgroundImgURL = fileReader.result as string;
-              // console.log(this.activeToken.backgroundImgURL);
-              // console.log(this.projectService.getAsset(AssetType.TOKEN, this.editorSwitchService.getActiveEditor().index) as Token)
-            }
-          }
-          fileReader.readAsDataURL(new Blob(value));
-        }
-      }
-    );
   }
 }

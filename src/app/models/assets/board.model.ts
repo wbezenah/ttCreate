@@ -1,4 +1,4 @@
-import { AssetType, TTCAsset } from "../shared/ttc-types";
+import { AssetType, TTCAsset } from "../../shared/ttc-types";
 
 export class Board implements TTCAsset {
     readonly type = AssetType.BOARD;

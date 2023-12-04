@@ -6,7 +6,7 @@ export class Editor {
       public type: EditorType,
       public name: string, 
       public closeable: boolean,
-      public index: number
+      public assetIndex: number
     ) { }
 
     close() {
@@ -14,6 +14,6 @@ export class Editor {
     }
 
     equals(e2: Editor): boolean {
-      return this.type == e2.type && this.index == e2.index;
+      return this.type == e2.type && this.assetIndex == e2.assetIndex;
     }
 }

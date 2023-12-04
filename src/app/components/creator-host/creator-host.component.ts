@@ -239,14 +239,4 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   get editorList(): Editor[] {
     return this.open_editors;
   }
-
-  // onNewCard() {
-  //   let newCardInfo: CardInfo = new CardInfo('New Card');
-  //   const viewContainerRef = this.cardHost.viewContainerRef;
-  //   const newComponentRef = viewContainerRef.createComponent(CardComponent);
-  //   newComponentRef.instance.cardInfo = newCardInfo;
-  //   newComponentRef.instance.width = 200;
-  //   newComponentRef.instance.height = 300;
-  //   this.componentRefs.push(newComponentRef);
-  // }
 }
