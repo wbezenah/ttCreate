@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Token } from '../../../models/assets/token.model';
 import { ElectronService } from '../../../services/electron.service';
-import { Circle, Rectangle, Shape, Square, toRectangle } from '../../../shared/shapes-math';
+import { toRectangle } from '../../../shared/shapes-math';
 import { ProjectService } from '../../../services/project.service';
 import { Subscription } from 'rxjs';
 import { AssetType } from '../../../shared/ttc-types';
@@ -70,26 +70,8 @@ export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   private updateDisplayShape() {
-    switch(this.tokenInfo.shape.shape_type.toLowerCase()) {
-      case 'square':
-        const square = this.tokenInfo.shape as Square;
-        this.width = square.sideLength;
-        this.height = square.sideLength;
-        this.tokenInfo.shape = toRectangle(square);
-        break;
-      case 'rectangle':
-        const rect = this.tokenInfo.shape as Rectangle;
-        this.width = rect.width;
-        this.height = rect.length;
-        break;
-      case 'circle':
-        const circ = this.tokenInfo.shape as Circle;
-        this.width  = circ.radius * 2;
-        this.height = circ.radius * 2;
-        break;
-      default:
-        break;
-    }
+    const shapeRect = toRectangle(this.tokenInfo.shape);
+    this.width, this.height = shapeRect.width, shapeRect.length;
     this.token_element.classList.forEach((value: string) => {if(value != 'token-comp') {this.token_element.classList.remove(value);};});
     this.token_element.classList.add(this.tokenInfo.shape.shape_type.toLowerCase());
   }
