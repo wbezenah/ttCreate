@@ -1,3 +1,4 @@
+import { Rectangle, Shape } from "../../shared/shapes-math";
 import { AssetType, TTCAsset } from "../../shared/ttc-types";
 
 export class Deck implements TTCAsset{
@@ -8,7 +9,9 @@ export class Deck implements TTCAsset{
 
     constructor(
         public name: string,
-        public index: number
+        public index: number,
+        public shape: Shape = new Rectangle(100, 50),
+        
     ) {
 
     }

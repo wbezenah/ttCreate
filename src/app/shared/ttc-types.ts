@@ -2,6 +2,7 @@ import { Token } from "../models/assets/token.model";
 import { Board } from "../models/assets/board.model";
 import { Deck } from "../models/assets/deck.model";
 import { Card } from "../models/assets/card.model";
+import { Shape } from "./shapes-math";
 
 export { TTCAsset, AssetType, EditorType, FileTypeSet }
 export { ETYPE_TO_ATYPE, ATYPE_TO_ETYPE, ATYPE_TO_A }
@@ -66,5 +67,7 @@ namespace FileTypeSet {
 
 interface TTCAsset {
     type: AssetType;
+    shape: Shape;
+    index: number;
     name: string;
 }

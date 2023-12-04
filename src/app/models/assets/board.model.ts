@@ -1,3 +1,4 @@
+import { Rectangle, Shape } from "../../shared/shapes-math";
 import { AssetType, TTCAsset } from "../../shared/ttc-types";
 
 export class Board implements TTCAsset {
@@ -7,7 +8,8 @@ export class Board implements TTCAsset {
 
     constructor(
         public name: string,
-        public index: number
+        public index: number,
+        public shape: Shape = new Rectangle(300, 300)
     ) {
 
     }
