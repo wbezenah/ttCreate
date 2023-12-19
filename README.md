@@ -11,11 +11,14 @@ _Currently in development..._
 - titlebar with menus (no functionality assigned to submenus) and close/max/restore/min buttons
     - Save / Load now opens a dialog for saving/loading project files
 - Assets:
-    - Token Asset functionality: Set background image
+    - Token Asset functionality: Set background image, change Shape (Rectangle, Circle)
 
 ### In Progress:
+- Refactor asset dragging/resizing
+    - Parent AssetComponent that each asset will extend that deals with resizing and dragging. No longer use drag/resize directive
 - bug fixes! known bugs:
     - application flicker on exiting modal window (Electron modals are weird, maybe just implement own modal)
+    - assets don't save position/size on refreshing editor
 - Refactor editor host based on redesign (will allow expanded work area beyond window with scrollbar to navigate editor)
 - Token Asset, Token Component, Token Editor Components
 - project service

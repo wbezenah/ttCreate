@@ -1,17 +1,19 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Token } from '../../../models/assets/token.model';
 import { ElectronService } from '../../../services/electron.service';
 import { toRectangle } from '../../../shared/shapes-math';
 import { ProjectService } from '../../../services/project.service';
 import { Subscription } from 'rxjs';
 import { AssetType } from '../../../shared/ttc-types';
+import { AssetComponent } from '../asset/asset.component';
 
 @Component({
   selector: 'app-token',
-  templateUrl: './token.component.html',
-  styleUrls: ['./token.component.css']
+  // templateUrl: './token.component.html',
+  templateUrl: '../asset/asset.component.html',
+  styleUrls: ['../asset/asset.component.css']
 })
-export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
+export class TokenComponent extends AssetComponent implements OnInit, AfterViewInit, OnDestroy{
   
   public tokenInfo: Token = new Token('', -1);
 
@@ -28,16 +30,16 @@ export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
 
   private subscriptions: Subscription[] = [];
 
-  private token_element: HTMLElement;
-
   constructor(
     private electronService: ElectronService,
     private projectService: ProjectService,
-    private elRef: ElementRef
   ) {
+    super(new Token('', -1), true, true, {top: true, left: true, right: true, bottom: true});
+    this.tokenInfo = super.asset as Token; //temp, change all code to user super.asset
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.subscriptions.push(this.projectService.assetUpdate.subscribe(
       (value: {type: AssetType, index: number, updates: {property: string, val: any}[]}) => {
         if(value.type == AssetType.TOKEN && value.index == this.tokenInfo.index) {
@@ -52,7 +54,7 @@ export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    const boundingRect = this.token_element.getBoundingClientRect();
+    const boundingRect = this.element.getBoundingClientRect();
     this.projectService.updateAsset(AssetType.TOKEN, this.tokenInfo.index, {property: 'top', val: boundingRect.top}, {property: 'left', val: boundingRect.left});
     for(let sub of this.subscriptions) {
       sub.unsubscribe();
@@ -60,11 +62,9 @@ export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   ngAfterViewInit(): void {
-    this.token_element = document.getElementsByClassName('token-comp').item(0) as HTMLElement;
-    this.token_element.style.left = this.tokenInfo.left + 'px';
-    this.token_element.style.top = this.tokenInfo.top + 'px';
-
-    console.log(this.token_element)
+    super.ngAfterViewInit();
+    this.element.style.left = this.tokenInfo.left + 'px';
+    this.element.style.top = this.tokenInfo.top + 'px';
 
     this.updateDisplayShape();
   }
@@ -72,8 +72,8 @@ export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
   private updateDisplayShape() {
     const shapeRect = toRectangle(this.tokenInfo.shape);
     this.width, this.height = shapeRect.width, shapeRect.length;
-    this.token_element.classList.forEach((value: string) => {if(value != 'token-comp') {this.token_element.classList.remove(value);};});
-    this.token_element.classList.add(this.tokenInfo.shape.shape_type.toLowerCase());
+    this.element.classList.forEach((value: string) => {if(value != 'token-comp') {this.element.classList.remove(value);};});
+    this.element.classList.add(this.tokenInfo.shape.shape_type.toLowerCase());
   }
 
 }

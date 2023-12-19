@@ -63,6 +63,7 @@ function ATYPE_TO_A(type: AssetType): typeof Board | typeof Card | typeof Deck |
 namespace FileTypeSet {
     export const allTypes = {extensions: ['*'], name: 'All Files'}
     export const imageTypes = {extensions: ['png', 'jpg'], name: 'Images'}
+    export const projectType = {extensions: ['ttcp'], name: 'TTC Projects'}
 }
 
 interface TTCAsset {
