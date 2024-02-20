@@ -13,11 +13,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
 import { CardComponent } from './components/asset-types/card/card.component';
-import { CardHostDirective } from './directives/card-host.directive';
-import { DragResizeDirective } from './directives/drag-resize.directive';
-
 import { CreatorHostComponent } from './components/creator-host/creator-host.component';
-
 import { BoardToolsComponent } from './components/editors/board/board-tools/board-tools.component';
 import { BoardEditorComponent } from './components/editors/board/board-editor/board-editor.component';
 import { BoardAssetsComponent } from './components/editors/board/board-assets/board-assets.component';
@@ -45,8 +41,6 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     ErrorPageComponent,
     CardComponent,
     CreatorHostComponent,
-    CardHostDirective,
-    DragResizeDirective,
     BoardToolsComponent,
     BoardEditorComponent,
     BoardAssetsComponent,

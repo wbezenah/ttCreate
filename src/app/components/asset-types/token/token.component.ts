@@ -13,9 +13,10 @@ import { AssetComponent } from '../asset/asset.component';
   templateUrl: '../asset/asset.component.html',
   styleUrls: ['../asset/asset.component.css']
 })
-export class TokenComponent extends AssetComponent implements OnInit, AfterViewInit, OnDestroy{
+export class TokenComponent implements OnInit, AfterViewInit, OnDestroy{
   
   public tokenInfo: Token = new Token('', -1);
+  private element: HTMLElement;
 
   // get boundary() {
   //   return {top: -1, left: -1, width: -1, height: -1};
@@ -34,12 +35,9 @@ export class TokenComponent extends AssetComponent implements OnInit, AfterViewI
     private electronService: ElectronService,
     private projectService: ProjectService,
   ) {
-    super(new Token('', -1), true, true, {top: true, left: true, right: true, bottom: true});
-    this.tokenInfo = super.asset as Token; //temp, change all code to user super.asset
   }
 
   ngOnInit(): void {
-    super.ngOnInit();
     this.subscriptions.push(this.projectService.assetUpdate.subscribe(
       (value: {type: AssetType, index: number, updates: {property: string, val: any}[]}) => {
         if(value.type == AssetType.TOKEN && value.index == this.tokenInfo.index) {
@@ -62,7 +60,6 @@ export class TokenComponent extends AssetComponent implements OnInit, AfterViewI
   }
 
   ngAfterViewInit(): void {
-    super.ngAfterViewInit();
     this.element.style.left = this.tokenInfo.left + 'px';
     this.element.style.top = this.tokenInfo.top + 'px';
 

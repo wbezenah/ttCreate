@@ -1,6 +1,9 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit } from '@angular/core';
-import { TTCAsset } from '../../../shared/ttc-types';
+import { AfterViewInit, Component, ElementRef, HostListener, Inject, OnInit } from '@angular/core';
+import { AssetType, TTCAsset } from '../../../shared/ttc-types';
 import { Token } from '../../../models/assets/token.model';
+import { Subscription } from 'rxjs';
+import { ProjectService } from '../../../services/project.service';
+import { Rectangle, toRectangle } from '../../../shared/shapes-math';
 
 const enum Status {
   OFF = 0,
@@ -21,40 +24,65 @@ const enum Status {
   styleUrls: ['./asset.component.css']
 })
 export class AssetComponent implements OnInit, AfterViewInit {
-  boundary?: {top: number, left: number, height: number, width: number};
-
-  private readonly MARGIN = 6;
-
   protected element: HTMLElement;
-  status: Status = Status.OFF;
-  mouseClick: {x: number, y: number};
 
-  currentX: number = 0;
-  currentY: number = 0;
-  initialX: number;
-  initialY: number;
+  private subscriptions: Subscription[] = [];
+
+
+  public width: number;
+  public height: number;
+
+  public resizable_sides: {top: boolean, left: boolean, right: boolean, bottom: boolean} = {top: true, left: true, right: true, bottom: true}
+  boundary?: {top: number, left: number, height: number, width: number};
+  private readonly MARGIN: number = 6;
+  private status: Status = Status.OFF;
+  mouseClick: {x: number, y: number};
+  currentX: number = 100;
+  currentY: number = 100;
+  initialX: number = 100;
+  initialY: number = 100;
   initialWidth: number;
   initialHeight: number;
 
   constructor(
-    // private elRef: ElementRef
-    public asset: TTCAsset,
-    public resizable: boolean = true,
-    public draggable: boolean = true,
-    public resizable_sides: {top: boolean, left: boolean, right: boolean, bottom: boolean} = {top: true, left: true, right: true, bottom: true}
-  ) { }
+    private projectService: ProjectService,
+    @Inject('asset') public asset: TTCAsset,
+    @Inject('resizable') public resizable: boolean = true,
+    @Inject('draggable') public draggable: boolean = true
+  ) { 
+    const rect: Rectangle = toRectangle(this.asset.shape);
+    this.height = rect.length;
+    this.width = rect.width;
+  }
 
   ngOnInit(): void {
-
+    this.subscriptions.push(
+      this.projectService.assetUpdate.subscribe(
+        (value: {type: AssetType, index: number, updates: {property: string, val: any}[]}) => {
+          if(value.type === this.asset.type && value.index === this.asset.index) {
+            for(let update of value.updates) {
+              if(update.property == 'shape') { this.updateDisplayShape(); }
+            }
+          }
+        }
+      )
+    );
   }
 
   ngAfterViewInit(): void {
     this.element = document.getElementsByClassName('asset-comp').item(0) as HTMLElement;
+    this.updateDisplayShape();
   }
 
-  get backgroundImage(): string {
-    if(this.asset.type === 'Token') { `url('${(this.asset as Token).backgroundImgURL}')`}
-    return '';
+  updateDisplayShape(): void {
+    const shapeRect = toRectangle(this.asset.shape);
+    this.width, this.height = shapeRect.width, shapeRect.length;
+    this.element.classList.forEach((value: string) => {if(value != 'asset-comp') {this.element.classList.remove(value);};});
+    this.element.classList.add(this.asset.shape.shape_type.toLowerCase());
+  }
+
+  get transform() {
+    return 'translate3d('+ this.currentX + 'px,' + this.currentY + 'px,' + '0px)';
   }
 
   private getPosStatus(xPos: number, yPos: number): Status {
@@ -74,6 +102,7 @@ export class AssetComponent implements OnInit, AfterViewInit {
 
   @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
     if(this.status != Status.OFF) { return; }
+
     let tempStatus: number;
     switch(true) {
       case this.resizable && this.draggable:
@@ -126,6 +155,33 @@ export class AssetComponent implements OnInit, AfterViewInit {
     this.element.style.cursor = 'auto';
   }
 
+  @HostListener('mousemove', ['$event']) onMouseOverBox(event: MouseEvent) {
+    if(this.resizable && !this.mouseClick) {
+      let currStatus = this.getPosStatus(event.clientX, event.clientY);
+      switch(currStatus) {
+        case Status.TOP:
+        case Status.BOTTOM:
+          this.element.style.cursor = 'ns-resize';
+          break;
+        case Status.LEFT:
+        case Status.RIGHT:
+          this.element.style.cursor = 'ew-resize';
+          break;
+        case Status.TOP_LEFT:
+        case Status.BOTTOM_RIGHT:
+          this.element.style.cursor = 'nwse-resize';
+          break;
+        case Status.TOP_RIGHT:
+        case Status.BOTTOM_LEFT:
+          this.element.style.cursor = 'nesw-resize';
+          break;
+        default:
+          this.element.style.cursor = 'auto';
+          break;
+      }
+    }
+  }
+
   @HostListener('window:mousemove', ['$event']) onMouseDrag(event: MouseEvent) {
     if(this.mouseClick) {
         switch(this.status) {
@@ -168,33 +224,6 @@ export class AssetComponent implements OnInit, AfterViewInit {
 
   }
 
-  @HostListener('mousemove', ['$event']) onMouseOverBox(event: MouseEvent) {
-    if(this.resizable && !this.mouseClick) {
-      let currStatus = this.getPosStatus(event.clientX, event.clientY);
-      switch(currStatus) {
-        case Status.TOP:
-        case Status.BOTTOM:
-          this.element.style.cursor = 'ns-resize';
-          break;
-        case Status.LEFT:
-        case Status.RIGHT:
-          this.element.style.cursor = 'ew-resize';
-          break;
-        case Status.TOP_LEFT:
-        case Status.BOTTOM_RIGHT:
-          this.element.style.cursor = 'nwse-resize';
-          break;
-        case Status.TOP_RIGHT:
-        case Status.BOTTOM_LEFT:
-          this.element.style.cursor = 'nesw-resize';
-          break;
-        default:
-          this.element.style.cursor = 'auto';
-          break;
-      }
-    }
-  }
-
   private drag(event: MouseEvent) {
     let boundingRect = this.element.getBoundingClientRect();
     this.currentX = event.clientX - this.initialX;
@@ -205,7 +234,7 @@ export class AssetComponent implements OnInit, AfterViewInit {
       if(this.currentY < 0) { this.currentY = 0; }
       if(this.currentY + boundingRect.height > this.boundary.height) { this.currentY = this.boundary.height - boundingRect.height; }
     }
-    this.element.style.transform = 'translate3d('+ this.currentX + 'px,' + this.currentY + 'px,' + '0px)';
+    // this.element.style.transform = 'translate3d('+ this.currentX + 'px,' + this.currentY + 'px,' + '0px)';
   }
 
   private setTop(event: MouseEvent) {
@@ -216,7 +245,7 @@ export class AssetComponent implements OnInit, AfterViewInit {
     }
 
     this.element.style.height = (this.element.getBoundingClientRect().height + yBefore - this.currentY).toString() + 'px';
-    this.element.style.transform = 'translate3d('+ this.currentX + 'px,' + this.currentY + 'px,' + '0px)';
+    // this.element.style.transform = 'translate3d('+ this.currentX + 'px,' + this.currentY + 'px,' + '0px)';
   }
 
   private setLeft(event: MouseEvent) {
@@ -228,7 +257,7 @@ export class AssetComponent implements OnInit, AfterViewInit {
     }
 
     this.element.style.width = (this.element.getBoundingClientRect().width + xBefore - this.currentX).toString() + 'px';
-    this.element.style.transform = 'translate3d('+ this.currentX + 'px,' + this.currentY + 'px,' + '0px)';
+    // this.element.style.transform = 'translate3d('+ this.currentX + 'px,' + this.currentY + 'px,' + '0px)';
   }
 
   private setRight(event: MouseEvent) {

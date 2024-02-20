@@ -79,9 +79,6 @@ export class EditorSwitchService {
     let nEditor: Editor = new Editor(this.tempNewEditorType, name, true, assetIndex);
     this.tempNewEditorType = null;
     let nIndex = this.open_editors.push(nEditor) - 1;
-    // console.log(nEditor);
-    // console.log(this.projectService.getAsset(ETYPE_TO_ATYPE(nEditor.type), nEditor.index));
-    // console.log(JSON.stringify(Object.fromEntries(this.projectService.loaded_project)));
     this.setActiveEditor(nIndex);
   }
 }
