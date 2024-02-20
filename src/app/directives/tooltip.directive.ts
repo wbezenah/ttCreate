@@ -57,7 +57,9 @@ export class TooltipDirective {
 
   hideTooltip() {
     window.setTimeout(() => {
-      this.renderer.removeChild(document.body, this.tooltipElement);
+      if(this.tooltipElement) {
+        this.renderer.removeChild(document.body, this.tooltipElement);
+      }
       this.tooltipElement = null;
     }, parseInt(this.delayMS));
   }
