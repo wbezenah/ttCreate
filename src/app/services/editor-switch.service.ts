@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ViewContainerRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Editor} from '../models/editor.model';
 import { ETYPE_TO_ATYPE, EditorType } from '../shared/ttc-types';
@@ -6,6 +6,7 @@ import { ProjectService } from './project.service';
 import { ElectronService } from './electron.service';
 import { IPCChannels } from '../shared/electron-com';
 import { IpcRendererEvent } from 'electron';
+import { ModalService } from './modal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class EditorSwitchService {
   activeEditorUpdate: Subject<EditorType> = new Subject<EditorType>();
 
   constructor(
+    private modalService: ModalService,
     private electronService: ElectronService,
     private projectService: ProjectService
   ) {
@@ -73,6 +75,9 @@ export class EditorSwitchService {
     const modalTitle = 'New ' + type;
     this.tempNewEditorType = type;
     this.electronService.send(IPCChannels.createModal, {title: modalTitle});
+    // const modalTitle = 'New ' + type;
+    // this.tempNewEditorType = type;
+    // this.modalService.openModal(modalTitle, '');
   }
 
   private createNewEditor(name: string, assetIndex: number) {

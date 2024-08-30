@@ -41,7 +41,7 @@ function createModal(parent: BrowserWindow, modalOptions: {title?: string, type?
     ipcMain.removeAllListeners('modalData');
   });
 
-  modalWin.loadURL(path.join(__dirname, "../src/app/components/modal/modal.html"));
+  modalWin.loadURL(path.join(__dirname, "../src/app/components/electron-modal/modal.html"));
   modalWin.once('ready-to-show', () => { modalWin.show() });
 
   return modalWin;

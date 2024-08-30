@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, HostListener, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 // import { CardInfo } from '../../models/card.model';
 import { CardComponent } from '../asset-types/card/card.component';
 import { ElectronService } from '../../services/electron.service';
@@ -6,6 +6,9 @@ import { IPCChannels } from '../../shared/electron-com';
 import { EditorSwitchService } from '../../services/editor-switch.service';
 import { Editor } from '../../models/editor.model';
 import { EditorType } from '../../shared/ttc-types';
+import { ModalService } from '../../services/modal.service';
+import { AssetHostDirective } from '../../directives/asset-host.directive';
+import { ModalComponent } from '../modal/modal.component';
 
 enum Resize {
   NONE = 0,
@@ -21,7 +24,9 @@ enum Resize {
 export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   componentRefs: ComponentRef<CardComponent>[] = [];
-  // cards: CardInfo[] = [];
+
+  @ViewChild(AssetHostDirective, {static: true}) modalHost!: AssetHostDirective;
+  private componentRef: ComponentRef<ModalComponent>;
 
   private editorWindowElement: HTMLElement;
   private toolsWindowElement: HTMLElement;
@@ -43,6 +48,7 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   private prevAssetsW = 150;
 
   constructor (
+    private modalService: ModalService,
     private electronService: ElectronService,
     private editorSwitchService: EditorSwitchService
   ) { }
@@ -67,6 +73,19 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.editorSwitchService.activeEditorUpdate.subscribe((value: EditorType) => {
       this.updateActiveComponents();
+    });
+
+    this.modalService.modalUpdate.subscribe((value: {channel: IPCChannels, data: string}) => {
+      switch(value.channel){
+        case IPCChannels.openModal:
+          this.openModal(value.data);
+          break;
+        case IPCChannels.closeModal:
+          this.closeModal();
+          break;
+        default:
+          break;
+      }
     });
   }
 
@@ -204,7 +223,7 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
     document.body.style.cursor = 'auto';
   }
 
-  private updateActiveComponents() {
+  private updateActiveComponents(): void {
     this.open_editors = this.editorSwitchService.getOpenEditors();
     this.activeElements = document.getElementsByClassName(this.editorSwitchService.getActiveEditor().type.toLowerCase());
 
@@ -226,7 +245,7 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   
-  openEditor(event: MouseEvent, index: number) {
+  openEditor(event: MouseEvent, index: number): void {
     let closeDiv: HTMLElement = document.getElementsByClassName('close').item(index - 1) as HTMLElement;
     if(closeDiv && closeDiv.contains(event.target as any)) {
       this.editorSwitchService.closeEditor(index);
@@ -237,5 +256,23 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get editorList(): Editor[] {
     return this.open_editors;
+  }
+
+  private openModal(title: string): void {
+    const viewContainerRef = this.modalHost.viewContainerRef;
+    viewContainerRef.clear();
+    //add constructor fields below
+    const customInjector = Injector.create({providers: [
+      {provide: ModalService, useValue: this.modalService},
+    ]});
+    this.componentRef = viewContainerRef.createComponent<ModalComponent>(ModalComponent, {injector: customInjector});
+    // this.componentRef.instance.asset = this.activeToken;
+    this.componentRef.instance.title = title;
+  }
+
+  private closeModal(): void {
+    console.log('closing')
+    const viewContainerRef = this.modalHost.viewContainerRef;
+    viewContainerRef.clear();
   }
 }
