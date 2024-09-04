@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ChangeDetectorRef, HostListener } from '@angular/core';
 import { ModalService } from '../../services/modal.service';
 import { ElectronService } from '../../services/electron.service';
 import { IPCChannels } from '../../shared/electron-com';
@@ -14,6 +14,8 @@ export class ModalComponent implements OnInit{
 
   @Input() position: {top: number, left: number} = {top: 0, left: 0};
   @Input() size: {width: number, height: number} = {width: 0, height: 0};
+
+  private inputElement: HTMLInputElement;
 
   constructor(private modalService: ModalService, private electronService: ElectronService, private changeDetectorRef: ChangeDetectorRef) { }
 
@@ -31,12 +33,20 @@ export class ModalComponent implements OnInit{
           }
         }
       });
+
+      this.inputElement = document.getElementById('name') as HTMLInputElement;
+      this.inputElement.focus();
   }
 
-  close() {
+  @HostListener('window:keydown.enter', ['$event']) handleKeyDown(event: KeyboardEvent) {
+    this.confirmModal();
+  }
+
+  closeModal() {
     this.modalService.closeModal();
   }
-  confirm() {
-    this.modalService.confirm();
+  confirmModal() {
+    const res = this.inputElement.value;
+    this.modalService.confirm(res);
   }
 }

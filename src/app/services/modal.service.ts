@@ -18,8 +18,8 @@ export class ModalService {
     this.modalUpdate.next({channel: IPCChannels.closeModal, data: 'close'});
   }
 
-  confirm() {
-    this.modalUpdate.next({channel: IPCChannels.modalRes, data: 'confirm'});
+  confirm(data: any) {
+    this.modalUpdate.next({channel: IPCChannels.modalRes, data: data});
     this.closeModal();
   }
 }

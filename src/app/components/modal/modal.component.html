@@ -7,9 +7,17 @@ class="modal-container"
     'height': size.height + 'px'
 }">
       <h1 class="title">{{ title }}</h1>
-      <p class="body">{{ body }}</p>
-      <div class="btn-container">
-        <button (click)="close()">Close</button>
-        <button (click)="confirm()">Confirm</button>
+      <div class="input">
+        <form id="f">
+          <div class="input-area">
+            <label for="name" id="asset-label">Enter {{ title }} Name</label>
+            <input type="text" name="name" id="name">
+            <span class="empty-err" id="empty-err" style="display: none;">Please enter a name!</span>
+            <div class="button-area">
+              <button type="button" (click)="confirmModal()">Create Asset</button>
+              <button type="button" (click)="closeModal()" id="cancel-btn">Cancel</button>
+            </div>
+          </div>
+        </form>
       </div>
   </div>

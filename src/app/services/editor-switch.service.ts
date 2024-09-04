@@ -1,12 +1,9 @@
-import { Injectable, ViewContainerRef } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { Editor} from '../models/editor.model';
 import { ETYPE_TO_ATYPE, EditorType } from '../shared/ttc-types';
 import { ProjectService } from './project.service';
-import { ElectronService } from './electron.service';
 import { IPCChannels } from '../shared/electron-com';
-import { IpcRendererEvent } from 'electron';
-import { ModalService } from './modal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +13,9 @@ export class EditorSwitchService {
   private active_editor: Editor;
   private open_editors: Editor[] = [new Editor(EditorType.MAIN, 'Main', false, -1)];
 
-  private tempNewEditorType: EditorType | null = null;
-  
   activeEditorUpdate: Subject<EditorType> = new Subject<EditorType>();
 
   constructor(
-    private modalService: ModalService,
-    private electronService: ElectronService,
     private projectService: ProjectService
   ) {
     this.active_editor = this.open_editors[0];
@@ -30,7 +23,6 @@ export class EditorSwitchService {
 
   switchNewAsset(value: {channel: IPCChannels, data: string}, type: EditorType) {
     if(value.channel === IPCChannels.modalRes) {
-      console.log(type);
       const index = this.projectService.newAsset(ETYPE_TO_ATYPE(type), value.data);
       this.createNewEditor(value.data, index, type);
     }
@@ -71,7 +63,6 @@ export class EditorSwitchService {
 
   private createNewEditor(name: string, assetIndex: number, type: EditorType) {
     let nEditor: Editor = new Editor(type, name, true, assetIndex);
-    this.tempNewEditorType = null;
     let nIndex = this.open_editors.push(nEditor) - 1;
     this.setActiveEditor(nIndex);
   }
