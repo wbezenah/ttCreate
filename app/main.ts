@@ -8,45 +8,6 @@ let win: BrowserWindow | null = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
-function createModal(parent: BrowserWindow, modalOptions: {title?: string, type?: string, width?: number, height?: number}): BrowserWindow {
-  const windowSize = parent.getSize();
-  const title = modalOptions.title ? modalOptions.title : 'modal--window--no-title';
-  const width = modalOptions.width ? modalOptions.width : Math.trunc(windowSize[0] / 2);
-  const height = modalOptions.height ? modalOptions.height : Math.trunc(windowSize[1] / 2);
-
-  let modalWin = new BrowserWindow({
-    parent: parent,
-    width: width,
-    height: height,
-    title: title,
-    modal: true,
-    maximizable: false,
-    alwaysOnTop: true,
-    autoHideMenuBar: true,
-    webPreferences: {
-      nodeIntegration: true,
-      allowRunningInsecureContent: (serve),
-      contextIsolation: false,
-      devTools: false
-    },
-    icon: path.join(__dirname, '../src/assets/logo.png')
-  });
-
-  ipcMain.on('modalData', (event: IpcMainEvent) => {
-    event.returnValue = {title: title};
-  });
-
-  modalWin.on('closed', () => { 
-    modalWin = null 
-    ipcMain.removeAllListeners('modalData');
-  });
-
-  modalWin.loadURL(path.join(__dirname, "../src/app/components/electron-modal/modal.html"));
-  modalWin.once('ready-to-show', () => { modalWin.show() });
-
-  return modalWin;
-}
-
 function createWindow(): BrowserWindow {
 
   const size = screen.getPrimaryDisplay().workAreaSize;
@@ -121,14 +82,6 @@ function createWindow(): BrowserWindow {
     let winMax = win.isMaximized();
     let size = win.getSize();
     win.webContents.send(IPCChannels.windowRes, [{max: winMax}, {width: size[0], height: size[1]}]);
-  });
-
-  ipcMain.on(IPCChannels.createModal, (event: IpcMainEvent, modalOptions: {title?: string, width?: number, height?: number}) => {
-    createModal(win, modalOptions);
-  });
-
-  ipcMain.on(IPCChannels.closeModal, (event: IpcMainEvent, modalRes: {modalResult?: string}) => {
-    win.webContents.send(IPCChannels.modalRes, [modalRes]);
   });
 
   ipcMain.on(IPCChannels.loadFile, (event: IpcMainEvent, loadOptions: {contentType?: FileFilter[], multiple: boolean}) => {
