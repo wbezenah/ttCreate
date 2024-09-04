@@ -1,5 +1,5 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { Editor} from '../models/editor.model';
 import { ETYPE_TO_ATYPE, EditorType } from '../shared/ttc-types';
 import { ProjectService } from './project.service';
@@ -26,16 +26,14 @@ export class EditorSwitchService {
     private projectService: ProjectService
   ) {
     this.active_editor = this.open_editors[0];
+  }
 
-    this.electronService.addRendererListener(IPCChannels.modalRes, (event: IpcRendererEvent, args: any[]) => {
-      // console.log(args);
-      for(let arg of args) {
-        if('modalResult' in arg) {
-          const index = this.projectService.newAsset(ETYPE_TO_ATYPE(this.tempNewEditorType), arg.modalResult);
-          this.createNewEditor(arg.modalResult, index);
-        }
-      }
-    });
+  switchNewAsset(value: {channel: IPCChannels, data: string}, type: EditorType) {
+    if(value.channel === IPCChannels.modalRes) {
+      console.log(type);
+      const index = this.projectService.newAsset(ETYPE_TO_ATYPE(type), value.data);
+      this.createNewEditor(value.data, index, type);
+    }
   }
 
   getActiveEditor(): Editor {
@@ -71,17 +69,8 @@ export class EditorSwitchService {
     return this.open_editors;
   }
 
-  openPromptModal(type: EditorType) {
-    const modalTitle = 'New ' + type;
-    this.tempNewEditorType = type;
-    this.electronService.send(IPCChannels.createModal, {title: modalTitle});
-    // const modalTitle = 'New ' + type;
-    // this.tempNewEditorType = type;
-    // this.modalService.openModal(modalTitle, '');
-  }
-
-  private createNewEditor(name: string, assetIndex: number) {
-    let nEditor: Editor = new Editor(this.tempNewEditorType, name, true, assetIndex);
+  private createNewEditor(name: string, assetIndex: number, type: EditorType) {
+    let nEditor: Editor = new Editor(type, name, true, assetIndex);
     this.tempNewEditorType = null;
     let nIndex = this.open_editors.push(nEditor) - 1;
     this.setActiveEditor(nIndex);

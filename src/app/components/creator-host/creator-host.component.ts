@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ComponentRef, HostListener, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
-// import { CardInfo } from '../../models/card.model';
 import { CardComponent } from '../asset-types/card/card.component';
 import { ElectronService } from '../../services/electron.service';
 import { IPCChannels } from '../../shared/electron-com';
@@ -264,14 +263,22 @@ export class CreatorHostComponent implements OnInit, OnDestroy, AfterViewInit {
     //add constructor fields below
     const customInjector = Injector.create({providers: [
       {provide: ModalService, useValue: this.modalService},
+      {provide: ElectronService, useValue: this.electronService}
     ]});
     this.componentRef = viewContainerRef.createComponent<ModalComponent>(ModalComponent, {injector: customInjector});
     // this.componentRef.instance.asset = this.activeToken;
     this.componentRef.instance.title = title;
+    this.componentRef.instance.size = {
+      width: this.prevWinSize.width / 3,
+      height: this.prevWinSize.height / 3
+    };
+    this.componentRef.instance.position = {
+      top: this.prevWinSize.height / 2 - (this.componentRef.instance.size.height / 2),
+      left: this.prevWinSize.width / 2 - (this.componentRef.instance.size.width / 2)
+    };
   }
 
   private closeModal(): void {
-    console.log('closing')
     const viewContainerRef = this.modalHost.viewContainerRef;
     viewContainerRef.clear();
   }

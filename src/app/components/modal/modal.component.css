@@ -1,8 +1,6 @@
 .modal-container{
     position: absolute;
     z-index: 5;
-    width: 500px;
-    height: auto;
     border: none;
     background-color: rgb(140, 140, 140);
     border-radius: 15px;
