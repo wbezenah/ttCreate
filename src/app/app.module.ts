@@ -27,7 +27,6 @@ import { DeckToolsComponent } from './components/editors/deck/deck-tools/deck-to
 import { TokenAssetsComponent } from './components/editors/token/token-assets/token-assets.component';
 import { TokenEditorComponent } from './components/editors/token/token-editor/token-editor.component';
 import { TokenToolsComponent } from './components/editors/token/token-tools/token-tools.component';
-import { TokenComponent } from './components/asset-types/token/token.component';
 import { AssetHostDirective } from './directives/asset-host.directive';
 import { AssetComponent } from './components/asset-types/asset/asset.component';
 import { ModalComponent } from './components/modal/modal.component';
@@ -55,7 +54,6 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     TokenAssetsComponent,
     TokenEditorComponent,
     TokenToolsComponent,
-    TokenComponent,
     AssetHostDirective,
     AssetComponent,
     ModalComponent

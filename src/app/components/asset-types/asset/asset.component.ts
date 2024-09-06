@@ -53,6 +53,12 @@ export class AssetComponent implements OnInit, AfterViewInit {
     const rect: Rectangle = toRectangle(this.asset.shape);
     this.height = rect.length;
     this.width = rect.width;
+    
+    this.currentX = this.asset.position.x;
+    this.initialX = this.asset.position.x;
+
+    this.currentY = this.asset.position.y;
+    this.initialY = this.asset.position.y;
   }
 
   ngOnInit(): void {
@@ -61,7 +67,7 @@ export class AssetComponent implements OnInit, AfterViewInit {
         (value: {type: AssetType, index: number, updates: {property: string, val: any}[]}) => {
           if(value.type === this.asset.type && value.index === this.asset.index) {
             for(let update of value.updates) {
-              if(update.property == 'shape') { this.updateDisplayShape(); }
+              // if(update.property == 'shape') { this.updateDisplayShape(); }
             }
           }
         }
@@ -71,12 +77,10 @@ export class AssetComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.element = document.getElementsByClassName('asset-comp').item(0) as HTMLElement;
-    this.updateDisplayShape();
+    this.updateElementShapeClass();
   }
 
-  updateDisplayShape(): void {
-    const shapeRect = toRectangle(this.asset.shape);
-    this.width, this.height = shapeRect.width, shapeRect.length;
+  updateElementShapeClass(): void {
     this.element.classList.forEach((value: string) => {if(value != 'asset-comp') {this.element.classList.remove(value);};});
     this.element.classList.add(this.asset.shape.shape_type.toLowerCase());
   }
@@ -150,9 +154,34 @@ export class AssetComponent implements OnInit, AfterViewInit {
   }
 
   @HostListener('window:mouseup', ['$event']) onMouseUp(event: MouseEvent) {
-    this.status = Status.OFF;
-    this.mouseClick = null;
-    this.element.style.cursor = 'auto';
+    /*
+      Update Asset Properties if Drag or Resize happened
+    */
+    if(this.status != Status.OFF) {
+      let options: {property: string, val: any}[] = [];
+      if(this.status === Status.DRAG) {
+        //options for position
+        options.push({
+          property: 'position',
+          val: {x: this.currentX, y: this.currentY}
+        });
+      }
+      else {
+        //options for size
+        const boundingRect = this.element.getBoundingClientRect();
+        options.push({
+          property: 'shape',
+          val: new Rectangle(boundingRect.height, boundingRect.width)
+        });
+      }
+      
+      this.projectService.updateAsset(this.asset.type, this.asset.index, ...options);
+
+      // End Drag/Resize
+      this.status = Status.OFF;
+      this.mouseClick = null;
+      this.element.style.cursor = 'auto';
+    }
   }
 
   @HostListener('mousemove', ['$event']) onMouseOverBox(event: MouseEvent) {
@@ -222,6 +251,20 @@ export class AssetComponent implements OnInit, AfterViewInit {
       }
     }
 
+  }
+
+  @HostListener('window:keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
+    if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+        event.preventDefault();
+        console.log('CMD+S Pressed: Saving to ProjectService');
+        // Save Width/Height
+        // this.projectService.updateAsset(this.asset.type, this.asset.index, 
+        //   {
+        //     property: 'shape',
+        //     val: new Rectangle(boundingRect.height, boundingRect.width)
+        //   }
+        // );
+    }
   }
 
   private drag(event: MouseEvent) {
