@@ -11,7 +11,7 @@ export class Deck implements TTCAsset{
         public name: string,
         public index: number,
         public shape: Shape = new Rectangle(100, 50),
-        
+        public position: {x: number, y: number} = {x: 0, y: 0}
     ) {
 
     }

@@ -10,7 +10,6 @@ export class Token implements TTCAsset {
         public index: number,
         public shape: Shape = new Rectangle(50, 50),
         public backgroundImgURL: string  = '',
-        public top: number = 0,
-        public left: number = 0
+        public position: {x: number, y: number} = {x: 0, y: 0}
     ) { }
 }

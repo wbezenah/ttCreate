@@ -9,7 +9,8 @@ export class Board implements TTCAsset {
     constructor(
         public name: string,
         public index: number,
-        public shape: Shape = new Rectangle(300, 300)
+        public shape: Shape = new Rectangle(300, 300),
+        public position: {x: number, y: number} = {x: 0, y: 0}
     ) {
 
     }

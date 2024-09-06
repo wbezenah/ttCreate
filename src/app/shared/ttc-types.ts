@@ -71,4 +71,5 @@ interface TTCAsset {
     shape: Shape;
     index: number;
     name: string;
+    position: {x: number, y: number};
 }
